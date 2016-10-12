@@ -1,0 +1,35 @@
+{
+  "name": "downtown",
+  "description": "downtown rising",
+  "main": "src/index.html",
+  "authors": [
+    "Bryce J. Fisher"
+  ],
+  "license": "ISC",
+  "homepage": "src/index.html",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.8",
+    "angular-ui-router": "0.3.1",
+    "angular-animate": "^1.5.8",
+    "angular-cookies": "^1.5.8",
+    "bootstrap": "^3.3.7",
+    "angular-touch": "^1.5.8",
+    "angular-bootstrap": "^2.2.0"
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "./dist/css/bootstrap.css",
+        "./dist/js/bootstrap.js"
+      ]
+    }
+  }
+}

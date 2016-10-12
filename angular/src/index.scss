@@ -1,0 +1,15 @@
+@import 'components/nav/nav';
+@import 'components/acts/acts';
+
+body{
+	background-image: url("images/background.jpg");
+    background-color: #000;
+}
+
+.font-almendra{
+	font-family: 'Almendra SC', serif;
+}
+
+h1, h2, h3, h4, h5, h6{
+	margin: 0;
+}
