@@ -1,6 +1,6 @@
 angular
     .module('rising')
-    .directive('typeaheadOpenOnFocus', function ($timeout) {
+    .directive('typeaheadOpenOnFocus', function () {
         return {
             require: 'ngModel',
             link: function (scope, element, attr, ngModel) {

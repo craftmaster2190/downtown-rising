@@ -13,4 +13,14 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
+.rounded-block {
+  background-color: white;
+  padding: 15px;
+  border-radius: 25px;
+  margin: 8px;
+  border: 1px solid #ccc;
+  border-bottom-width: 3px;
+  border-right-width: 3px;
+}
+
 

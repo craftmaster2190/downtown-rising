@@ -1,5 +1,6 @@
 package music.festival;
 
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ public class CommonEntity {
     private String updatedBy;
 
     @Id
+    @GeneratedValue
     public Long getId() {
         return id;
     }

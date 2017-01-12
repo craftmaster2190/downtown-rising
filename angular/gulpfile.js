@@ -206,7 +206,7 @@ function bumpVersion(gulpDone) {
         var version = package.version.split('.');
         for (var i = version.length - 1; i >= 0; i--) {
             version[i]++;
-            if (i != 0 && version[i] >= 10) {
+            if (i !== 0 && version[i] >= 10) {
                 version[i] = 0;
             } else {
                 break;

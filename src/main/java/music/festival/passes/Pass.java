@@ -1,6 +1,7 @@
 package music.festival.passes;
 
 import music.festival.CommonEntity;
+import music.festival.user.User;
 
 import javax.persistence.Entity;
 
@@ -9,4 +10,6 @@ import javax.persistence.Entity;
  */
 @Entity
 public class Pass extends CommonEntity {
+    private User user;
+    private String passBarcode;
 }

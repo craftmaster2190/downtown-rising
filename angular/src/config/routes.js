@@ -12,7 +12,8 @@ function routesConfig($stateProvider, $urlRouterProvider, $locationProvider) {
     for (var i = baseStates.length - 1; i >= 0; i--) {
         $stateProvider.state(baseStates[i], {
             url: '/' + baseStates[i],
-            template: '<' + baseStates[i] + '></' + baseStates[i] + '>'
+            template: '<' + baseStates[i] + '></' + baseStates[i] + '>',
+            resolve: {}
         });
     }
 

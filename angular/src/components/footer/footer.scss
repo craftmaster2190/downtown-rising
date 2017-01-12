@@ -5,12 +5,13 @@ html, body {
 }
 
 $footer-height: 60px;
+$bottom-bumper: 45px;
 .body-container {
   min-height: 100%;
   position: relative;
 
   > .container {
-    padding-bottom: $footer-height;
+    padding-bottom: $footer-height + $bottom-bumper;
   }
 
   > footer {
