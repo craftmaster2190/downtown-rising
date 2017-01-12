@@ -183,15 +183,52 @@ function validateGulpfile() {
         .pipe(plugins.print());
 }
 
-function bumpVersion(callback) {
-    var package = jsonfile.readFileSync('package.json'),
-        bower = jsonfile.readFileSync('bower.json'),
-        pom = fs.readFileSync('../pom.xml');
+function bumpVersion(gulpDone) {
+    var package = jsonfile.readFileSync('package.json', 'utf8'),
+        bower = jsonfile.readFileSync('bower.json', 'utf8'),
+        pom = fs.readFileSync('../pom.xml', 'utf8'),
+        xmlOptions = {
+            preserveChildrenOrder: true
+        },
+        jsonOptions = {
+            spaces: 2
+        },
+        initialVersion = package.version;
 
-    console.log(package.version);
+    transformVersion();
+    updateJsonFiles();
+    updatePomFile();
 
+    console.log(initialVersion + ' => ' + package.version);
+    gulpDone();
 
-    callback();
+    function transformVersion() {
+        var version = package.version.split('.');
+        for (var i = version.length - 1; i >= 0; i--) {
+            version[i]++;
+            if (i != 0 && version[i] >= 10) {
+                version[i] = 0;
+            } else {
+                break;
+            }
+        }
+        package.version = version.join('.');
+    }
+
+    function updateJsonFiles() {
+        bower.version = package.version;
+        jsonfile.writeFileSync('package.json', package, jsonOptions);
+        jsonfile.writeFileSync('bower.json', bower, jsonOptions);
+    }
+
+    function updatePomFile() {
+        // xml2js callback is synchronous
+        new xml2js.Parser(xmlOptions).parseString(pom, function (err, result) {
+            result.project.version[0] = package.version;
+            var xml = new xml2js.Builder(xmlOptions).buildObject(result);
+            fs.writeFileSync('../pom.xml', xml);
+        });
+    }
 }
 
 //TASKS
