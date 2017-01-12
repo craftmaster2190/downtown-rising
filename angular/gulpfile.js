@@ -1,9 +1,12 @@
 //GLOBALS
-var gulp = require('gulp');
-var plugins = require('gulp-load-plugins')();
-var mainBowerFiles = require('main-bower-files');
-var series = require('stream-series');
-var del = require('del');
+var gulp = require('gulp'),
+    plugins = require('gulp-load-plugins')(),
+    mainBowerFiles = require('main-bower-files'),
+    series = require('stream-series'),
+    del = require('del'),
+    jsonfile = require('jsonfile'),
+    xml2js = require('xml2js'),
+    fs = require('fs');
 
 //PATHS
 paths = {};
@@ -80,7 +83,7 @@ function htmlProd() {
             filename: 'templates.js',
             standalone: false,
             module: 'rising',
-            path: function(path, base) {
+            path: function (path, base) {
                 return path.replace(base, 'components/');
             }
         }))
@@ -180,6 +183,17 @@ function validateGulpfile() {
         .pipe(plugins.print());
 }
 
+function bumpVersion(callback) {
+    var package = jsonfile.readFileSync('package.json'),
+        bower = jsonfile.readFileSync('bower.json'),
+        pom = fs.readFileSync('../pom.xml');
+
+    console.log(package.version);
+
+
+    callback();
+}
+
 //TASKS
 gulp.task('js:dist', jsDist);
 gulp.task('js:prod', jsProd);
@@ -193,7 +207,7 @@ gulp.task('html:dist', htmlDist);
 gulp.task('html:prod', htmlProd);
 
 //BUILDERS
-gulp.task('clean', function() {
+gulp.task('clean', function () {
     return del(paths.dist + '/*', {
         force: true
     });
@@ -203,22 +217,22 @@ gulp.task('build:dist', ['clean', 'validate-gulp-file'], buildDist);
 gulp.task('build:prod', ['clean', 'validate-gulp-file'], buildProd);
 
 //WATCHERS
-gulp.task('watch', ['build:dist'], function() {
-    plugins.watch(paths.js, function(vinyl) {
+gulp.task('watch', ['build:dist'], function () {
+    plugins.watch(paths.js, function (vinyl) {
         handleAddFiles(vinyl.event);
         return jsDist();
     });
-    plugins.watch(paths.scss, function(vinyl) {
+    plugins.watch(paths.scss, function (vinyl) {
         return cssDist();
     });
-    plugins.watch(paths.images, function(vinyl) {
+    plugins.watch(paths.images, function (vinyl) {
         return imageDist();
     });
-    plugins.watch(paths.componentsHtml, function(vinyl) {
+    plugins.watch(paths.componentsHtml, function (vinyl) {
         handleAddFiles(vinyl.event);
         return htmlDist();
     });
-    plugins.watch(paths.index, function(vinyl) {
+    plugins.watch(paths.index, function (vinyl) {
         handleAddFiles(vinyl.event);
         return indexHtmlBuiltDist();
     });
@@ -233,3 +247,5 @@ gulp.task('watch', ['build:dist'], function() {
 //MISC
 gulp.task('validate-gulp-file', validateGulpfile);
 gulp.task('default', ['watch']);
+
+gulp.task('bump', bumpVersion);

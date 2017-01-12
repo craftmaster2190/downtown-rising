@@ -1,8 +1,8 @@
 Commands
 
 npm install
-npm run watch-dev
-npm build
+npm start
+npm run build
 
 mvn spring-boot:run -Drun.profiles=dev
 mvn package

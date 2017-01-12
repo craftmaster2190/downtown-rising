@@ -4,7 +4,9 @@
   "description": "downtown rising",
   "main": "src/index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "node node_modules/bower/lib/bin/bower.js install",
+    "build": "node node_modules/gulp/bin/gulp.js build:prod",
+    "start": "node node_modules/gulp/bin/gulp.js watch"
   },
   "author": "Bryce J. Fisher",
   "license": "ISC",
@@ -31,12 +33,9 @@
     "gulp-uglify": "^2.0.0",
     "gulp-watch": "^4.3.10",
     "jshint": "^2.9.3",
+    "jsonfile": "^2.4.0",
     "main-bower-files": "^2.13.1",
-    "stream-series": "^0.1.1"
-  },
-  "scripts": {
-    "postinstall": "node node_modules/bower/lib/bin/bower.js install",
-    "build": "node node_modules/gulp/bin/gulp.js build:prod",
-    "watch-dev": "node node_modules/gulp/bin/gulp.js watch"
+    "stream-series": "^0.1.1",
+    "xml2js": "^0.4.17"
   }
 }
