@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<base href="/"/>
-		<meta charset="utf-8"/>
-		<meta name="description" content=""/>
-		<meta name="viewport" content="width=device-width"/>
-		<title>Downtown Rising</title>
-		<!-- inject:css -->
-		<!-- endinject -->
-		<link href="https://fonts.googleapis.com/css?family=Almendra+SC" rel="stylesheet"/>
-	</head>
-	<body ng-app="rising">
-		<navigation></navigation>
-		<div class="container">
-			<ui-view></ui-view>
-		</div>
-		<!-- inject:js -->
-		<!-- endinject -->
-	</body>
+<head>
+    <base href="/"/>
+    <meta charset="utf-8"/>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <title>Downtown Rising</title>
+    <!-- inject:css -->
+    <!-- endinject -->
+</head>
+<body ng-app="rising">
+<div class="body-container">
+    <navigation></navigation>
+    <div class="container">
+        <ui-view></ui-view>
+    </div>
+    <footer></footer>
+</div>
+<!-- inject:js -->
+<!-- endinject -->
+</body>
 </html>

@@ -11,6 +11,7 @@ paths.gulpfile = 'gulpfile.js';
 paths.index = 'src/index.html';
 paths.js = 'src/**/*.js';
 paths.scss = 'src/**/*.scss';
+paths.indexScss = 'src/index.scss';
 paths.images = 'src/images/*';
 paths.componentsHtml = 'src/components/**/*.html';
 paths.dist = '../src/main/resources/static';
@@ -21,7 +22,7 @@ paths.distImage = paths.dist + '/images';
 
 //PIPE FUNCTIONS
 function cssDist() {
-    return gulp.src(paths.scss)
+    return gulp.src(paths.indexScss)
         .pipe(plugins.plumber())
         .pipe(plugins.sass())
         .pipe(plugins.autoprefixer())
@@ -231,4 +232,4 @@ gulp.task('watch', ['build:dist'], function() {
 
 //MISC
 gulp.task('validate-gulp-file', validateGulpfile);
-gulp.task('default', ['watch:dist']);
+gulp.task('default', ['watch']);

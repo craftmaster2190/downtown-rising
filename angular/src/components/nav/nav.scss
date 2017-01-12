@@ -1,51 +1,80 @@
-$nav-height: 120px;
+@import '../../variables';
 
-navigation{
-	display: block;
-	width: 100%;
-	margin: 15px;
-	font-family: 'Almendra SC', serif;
-	font-size: 1.3em;
-	img.logo{
-		max-height: $nav-height;
-		max-width: 300px;
-		margin-right: 14px;
-		float: left;
-		@media (max-width: 699px){
-			height: 79px;
-		}
-	}
+$font-size: 18px;
+$nav-height: 60px + $font-size;
+$nav-button-spacing: 14px;
 
-	nav-link a{
-		margin: 15px;
-		padding: 5px 8px;
-		display: inline-block;
-		background-color: #ddd;
-		text-align: center;
-		transition: all 0.5s linear;
-		border: 0;
-		border-radius: 4px;
+navigation {
+  display: block;
+  background-color: white;
+  margin-bottom: 20px;
+  height: $nav-height;
 
-		&, &:hover, &:active, &:focus{
-			outline: 0;
-			text-decoration: none;
-			color: black;
-		}
+  .container {
+    height: $nav-height;
+  }
 
-		&:hover{
-			background-color: transparent;
-			margin: 5px;
-			padding: 15px 18px;
-			border-radius: 25px;
-		}
-	}
-	a.downtown-rising{
-		font-size: 2em;
+  a {
+    &, &:hover, &:active, &:focus {
+      outline: 0;
+      text-decoration: none;
+      color: black;
+    }
 
-		&, &:hover, &:active, &:focus{
-			outline: 0;
-			text-decoration: none;
-			color: black;
-		}
-	}
+    margin: $nav-button-spacing 0;
+    padding: $nav-button-spacing;
+    border-radius: 35px;
+
+    &.dates {
+      float: right;
+      font-size: $font-size;
+      line-height: $font-size;
+    }
+  }
+
+  nav-link {
+    box-sizing: content-box;
+    height: $nav-height;
+    display: inline-block;
+
+    > a {
+      font-size: $font-size;
+      line-height: $font-size;
+      display: inline-block;
+      text-align: center;
+      transition: all 0.5s linear;
+      background-color: transparent;
+      border: 0;
+      height: $nav-height - ($nav-button-spacing * 4);
+      box-sizing: content-box;
+
+      &:hover, &.active {
+        margin: 0;
+        padding: ($nav-button-spacing * 2) $nav-button-spacing;
+        border-radius: 0;
+      }
+    }
+  }
+
+  $nav-colors: $theme-dark-orange, $theme-blue, $theme-pink, $theme-yellow, $theme-light-orange, $theme-light-gray;
+
+  @for $i from 1 through length($nav-colors) {
+    nav-link:nth-of-type(#{$i}) {
+      a:hover, a.active {
+        background-color: nth($nav-colors, $i);
+      }
+    }
+  }
+
+  a.downtown-rising {
+    margin: 0;
+    padding: 0;
+    > img {
+      $logo-padding: 5px;
+      height: $nav-height - ($logo-padding * 2);
+      padding-top: $logo-padding;
+      padding-bottom: $logo-padding;
+    }
+  }
+
 }

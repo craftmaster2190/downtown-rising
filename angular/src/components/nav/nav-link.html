@@ -1,1 +1,1 @@
-<a ui-sref="{{::$ctrl.link}}">{{::$ctrl.name}}</a>
+<a ng-class="{'active': $ctrl.isCurrentState()}" ui-sref="{{::$ctrl.link}}">{{::$ctrl.name}}</a>

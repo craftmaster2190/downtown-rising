@@ -6,7 +6,14 @@ angular
             link: '@',
             name: '@'
         },
-        controller: function() {
+        controller: function ($state) {
             console.log('Initializing NavLink Controller...');
+
+            var vm = this;
+            vm.isCurrentState = isCurrentState;
+
+            function isCurrentState() {
+                return $state.current.name === vm.link;
+            }
         }
     });
