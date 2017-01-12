@@ -1,0 +1,41 @@
+<div class="col-md-6">
+    <h3>Login</h3>
+    <form-input-text title="Username"></form-input-text>
+    <form-input-text title="Password"></form-input-text>
+    <button class="btn btn-default">Login</button>
+    <br/><br/><br/>
+
+    <h3>Purchase Tickets at City Weekly</h3>
+    <br/>
+    <button class="btn btn-default">City Weekly <i class="glyphicon glyphicon-new-window"></i></button>
+</div>
+
+<div class="col-md-6 row">
+    <h3>Register</h3>
+    <form-input-text title="Pass Barcode"></form-input-text>
+    <div class="col-sm-6">
+        <form-input-text title="Birthdate"></form-input-text>
+    </div>
+    <div class="col-sm-6">
+        <label for="gender">Gender</label>
+        <input id="gender" type="text" ng-model="$ctrl.gender" uib-typeahead="state for state in ['Male', 'Female']"
+               class="form-control" typeahead-select-on-blur="true" typeahead-editable="false"
+               typeahead-open-on-focus="">
+    </div>
+    <div class="col-xs-12">
+        <form-input-text title="Full Name"></form-input-text>
+    </div>
+    <div class="col-xs-12">
+        <form-input-text title="Address"></form-input-text>
+    </div>
+    <div class="col-xs-12">
+        <form-input-text title="Phone"></form-input-text>
+    </div>
+    <div class="col-xs-12">
+        <form-input-text title="Email"></form-input-text>
+    </div>
+    <div class="col-xs-12">
+        <button class="btn btn-default">Register</button>
+        <br/><br/><br/>
+    </div>
+</div>

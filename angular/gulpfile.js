@@ -73,9 +73,9 @@ function htmlDist() {
 function htmlProd() {
     return gulp.src(paths.componentsHtml)
         .pipe(plugins.plumber())
-        .pipe(plugins.htmlmin({
-            collapseWhitespace: true
-        }))
+        // .pipe(plugins.htmlmin({
+        //     collapseWhitespace: false
+        // }))
         .pipe(plugins.ngTemplates({
             filename: 'templates.js',
             standalone: false,
