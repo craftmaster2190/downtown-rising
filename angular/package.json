@@ -1,12 +1,13 @@
 {
   "name": "downtown",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "downtown rising",
   "main": "src/index.html",
   "scripts": {
     "postinstall": "node node_modules/bower/lib/bin/bower.js install",
     "build": "node node_modules/gulp/bin/gulp.js build:prod",
-    "start": "node node_modules/gulp/bin/gulp.js watch"
+    "start": "node node_modules/gulp/bin/gulp.js watch",
+    "bump-version": "node node_modules/gulp/bin/gulp.js bump"
   },
   "author": "Bryce J. Fisher",
   "license": "ISC",

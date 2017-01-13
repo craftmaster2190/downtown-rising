@@ -1,12 +1,6 @@
 <div class="container">
     <a ui-sref="home" class="downtown-rising"><img src="images/music-logo-trans.png"></a>
-
-    <nav-link name="Line Ups" link="lineups"></nav-link>
-    <nav-link name="Venues" link="venues"></nav-link>
-    <nav-link name="Sponsors" link="sponsors"></nav-link>
-    <nav-link name="Passes" link="passes"></nav-link>
-    <nav-link name="Our Purpose" link="purpose"></nav-link>
-    <nav-link name="Contact Us" link="contact"></nav-link>
-
+    <span ng-include="'components/nav/nav-link-list.html'"></span>
     <a class="dates" ui-sref="passes">March 2 - 7, 2017</a>
+    <nav-link class="mobile-button" name="Menu" link="nav"></nav-link>
 </div>

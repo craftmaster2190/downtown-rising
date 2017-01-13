@@ -18,6 +18,7 @@ public class ServableFile extends CommonEntity {
     private String name;
     private byte[] bytes;
 
+    @SuppressWarnings("unused")
     public ServableFile() {
     }
 

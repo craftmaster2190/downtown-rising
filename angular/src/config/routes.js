@@ -17,5 +17,11 @@ function routesConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         });
     }
 
+    $stateProvider.state('nav', {
+        url: '/nav',
+        template: '<span ng-include="\'components/nav/mobile-nav.html\'"></span>',
+        resolve: {}
+    });
+
     $urlRouterProvider.otherwise('/home');
 }

@@ -1,8 +1,9 @@
 @import '../../variables';
 
-$font-size: 18px;
+$font-size: 16px;
 $nav-height: 60px + $font-size;
 $nav-button-spacing: 14px;
+$nav-colors: $theme-blue, $theme-pink, $theme-yellow, $theme-light-orange, $theme-light-gray, $theme-dark-orange;
 
 navigation {
   display: block;
@@ -15,12 +16,6 @@ navigation {
   }
 
   a {
-    &, &:hover, &:active, &:focus {
-      outline: 0;
-      text-decoration: none;
-      color: black;
-    }
-
     margin: $nav-button-spacing 0;
     padding: $nav-button-spacing;
     border-radius: 35px;
@@ -56,8 +51,6 @@ navigation {
     }
   }
 
-  $nav-colors: $theme-dark-orange, $theme-blue, $theme-pink, $theme-yellow, $theme-light-orange, $theme-light-gray;
-
   @for $i from 1 through length($nav-colors) {
     nav-link:nth-of-type(#{$i}) {
       a:hover, a.active {
@@ -77,4 +70,46 @@ navigation {
     }
   }
 
+  .mobile-button {
+    display: none;
+    float: right;
+    font-size: $font-size;
+    line-height: $font-size;
+  }
+
+  @media screen and (max-width: 1200px) {
+    nav-link {
+      display: none;
+      &.mobile-button {
+        display: inline-block;
+      }
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    a.dates {
+      display: none;
+    }
+  }
+}
+
+.mobile-nav {
+  nav-link {
+    display: block;
+    text-align: center;
+    font-size: 200%;
+    margin: 3px;
+    a {
+      padding: 8px 35px;
+      border-radius: 25px;
+    }
+  }
+
+  @for $i from 1 through length($nav-colors) {
+    nav-link:nth-of-type(#{$i}) {
+      a:hover, a.active {
+        background-color: nth($nav-colors, $i);
+      }
+    }
+  }
 }
