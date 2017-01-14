@@ -1,8 +1,8 @@
 @import 'variables';
-
 @import 'components/nav/nav';
 @import 'components/footer/footer';
 @import 'components/footer/social_icon';
+@import 'components/sponsors/sponsors';
 
 @font-face {
   font-family: 'archivo_blackregular';
@@ -56,4 +56,15 @@ a {
   }
 }
 
+.masonry {
+  column-count: 3;
+  @media (max-width: 1200px) {
+    column-count: 2;
+  }
+  @media (max-width: 600px) {
+    column-count: 1;
+  }
+  column-gap: 0;
+  width: 100%;
+}
 

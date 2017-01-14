@@ -9,7 +9,7 @@ var gulp = require('gulp'),
     fs = require('fs');
 
 //PATHS
-paths = {};
+var paths = {};
 paths.gulpfile = 'gulpfile.js';
 paths.index = 'src/index.html';
 paths.js = 'src/**/*.js';
@@ -22,6 +22,10 @@ paths.distLib = paths.dist + '/lib';
 paths.distFonts = paths.dist + '/fonts';
 paths.distHtml = paths.dist + '/components';
 paths.distImage = paths.dist + '/images';
+
+var jsOrder = ['jquery.js',
+    'bootstrap.js',
+    'angular.js'];
 
 //PIPE FUNCTIONS
 function cssDist() {
@@ -109,7 +113,7 @@ function imageProd() {
 function bowerDist() {
     return gulp.src(mainBowerFiles())
         .pipe(plugins.plumber())
-        .pipe(plugins.order(['jquery.js', 'bootstrap.js', 'angular.js']))
+        .pipe(plugins.order(jsOrder))
         .pipe(gulp.dest(paths.distLib))
         .pipe(plugins.print());
 }
@@ -117,7 +121,7 @@ function bowerDist() {
 function bowerProd() {
     var bowerJs = gulp.src(mainBowerFiles('**/*.js'))
         .pipe(plugins.plumber())
-        .pipe(plugins.order(['jquery.js', 'bootstrap.js', 'angular.js']))
+        .pipe(plugins.order(jsOrder))
         .pipe(plugins.concat('vendor.min.js'))
         .pipe(plugins.uglify())
         .pipe(gulp.dest(paths.dist))

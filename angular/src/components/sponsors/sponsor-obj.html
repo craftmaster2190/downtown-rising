@@ -1,0 +1,30 @@
+<div ng-switch="$ctrl.edit">
+    <div class="rounded-block">
+        <div ng-switch-when="true">
+            <form-input-text title="Name" model="$ctrl.model.name"></form-input-text>
+            <div class="form-group">
+                <label for="image">Image</label>
+                <optional-img image-id="$ctrl.model.imageId"></optional-img>
+                <input id="image" form-file-input type="file" file-changed="$ctrl.updateImage(file)">
+            </div>
+            <div class="form-group">
+                <label for="text">Text</label>
+                <textarea id="text" ng-model="$ctrl.model.text" class="form-control"></textarea>
+            </div>
+            <button class="btn btn-default" ng-click="$ctrl.changeMode()"><i class="glyphicon glyphicon-ok"></i>
+            </button>
+            <button class="btn btn-danger" ng-click="$ctrl.deleteSponsor()"><i class="glyphicon glyphicon-remove"></i>
+            </button>
+        </div>
+        <div ng-switch-default>
+            <h3 ng-bind="$ctrl.model.name"></h3>
+            <optional-img image-id="$ctrl.model.imageId"></optional-img>
+            <div ng-bind="$ctrl.model.text"></div>
+            <button class="btn btn-default" ng-click="$ctrl.changeMode()"><i class="glyphicon glyphicon-pencil"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+

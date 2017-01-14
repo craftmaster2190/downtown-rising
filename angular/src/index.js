@@ -1,1 +1,1 @@
-angular.module('rising', ['ui.router', 'ui.bootstrap']);
+angular.module('rising', ['ui.router', 'ui.bootstrap', 'lr.upload']);

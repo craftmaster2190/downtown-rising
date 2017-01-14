@@ -7,7 +7,7 @@ angular
             name: '@'
         },
         controller: function ($state) {
-            console.log('Initializing NavLink Controller...');
+            console.log('Initializing NavLink (' + this.name + ') Controller...');
 
             var vm = this;
             vm.isCurrentState = isCurrentState;
