@@ -1,6 +1,7 @@
 angular
     .module("rising")
     .factory('MultipartFileService', function (upload) {
+        console.log('Initializing MultipartFileService...');
         return MultipartFileService;
 
         function MultipartFileService(file, uploadUrl) {

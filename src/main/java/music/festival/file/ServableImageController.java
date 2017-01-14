@@ -16,17 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/files")
-public class ServableFileController {
+public class ServableImageController {
 
     @Autowired
-    ServableFileRepository servableFileRepository;
+    ServableImageRepository servableImageRepository;
 
     @GetMapping("/{id}")
     public ResponseEntity<Resource> serveFile(@PathVariable Long id) {
-        ServableFile servableFile = servableFileRepository.findOne(id);
-        if (servableFile == null)
+        ServableImage servableImage = servableImageRepository.findOne(id);
+        if (servableImage == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        Resource file = servableFile.getAsResource();
+        Resource file = servableImage.getAsResource();
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")

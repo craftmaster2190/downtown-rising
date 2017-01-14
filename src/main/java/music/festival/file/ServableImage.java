@@ -14,16 +14,16 @@ import java.io.IOException;
  * Created by bryce_fisher on 1/12/17.
  */
 @Entity
-public class ServableFile extends CommonEntity {
+public class ServableImage extends CommonEntity {
     private static final String[] ACCEPTED_FILE_EXTENSIONS = new String[]{"jpg", "jpeg", "png", "gif", "bmp"};
     private String name;
     private byte[] bytes;
 
     @SuppressWarnings("unused")
-    public ServableFile() {
+    public ServableImage() {
     }
 
-    public ServableFile(MultipartFile file) throws IOException {
+    public ServableImage(MultipartFile file) throws IOException {
         setName(file.getOriginalFilename());
         setBytes(file.getBytes());
     }

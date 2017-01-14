@@ -23,9 +23,12 @@ paths.distFonts = paths.dist + '/fonts';
 paths.distHtml = paths.dist + '/components';
 paths.distImage = paths.dist + '/images';
 
-var jsOrder = ['jquery.js',
+var orders = {};
+orders.vendorJs = ['jquery.js',
     'bootstrap.js',
     'angular.js'];
+orders.appJs = ['RootEntity.js',
+    'index.js'];
 
 //PIPE FUNCTIONS
 function cssDist() {
@@ -51,6 +54,7 @@ function cssProd() {
 function jsDist() {
     return gulp.src(paths.js)
         .pipe(plugins.plumber())
+        .pipe(plugins.order(orders.appJs))
         .pipe(plugins.jshint())
         .pipe(plugins.jshint.reporter('default'))
         .pipe(gulp.dest(paths.dist))
@@ -60,6 +64,8 @@ function jsDist() {
 function jsProd() {
     return gulp.src(paths.js)
         .pipe(plugins.plumber())
+        .pipe(plugins.order(orders.appJs))
+        .pipe(plugins.stripDebug())
         .pipe(plugins.jshint())
         .pipe(plugins.jshint.reporter('default'))
         .pipe(plugins.iife())
@@ -80,9 +86,10 @@ function htmlDist() {
 function htmlProd() {
     return gulp.src(paths.componentsHtml)
         .pipe(plugins.plumber())
-        // .pipe(plugins.htmlmin({
-        //     collapseWhitespace: false
-        // }))
+        .pipe(plugins.htmlmin({
+            collapseWhitespace: true,
+            conservativeCollapse: true
+        }))
         .pipe(plugins.ngTemplates({
             filename: 'templates.js',
             standalone: false,
@@ -113,7 +120,7 @@ function imageProd() {
 function bowerDist() {
     return gulp.src(mainBowerFiles())
         .pipe(plugins.plumber())
-        .pipe(plugins.order(jsOrder))
+        .pipe(plugins.order(orders.vendorJs))
         .pipe(gulp.dest(paths.distLib))
         .pipe(plugins.print());
 }
@@ -121,7 +128,7 @@ function bowerDist() {
 function bowerProd() {
     var bowerJs = gulp.src(mainBowerFiles('**/*.js'))
         .pipe(plugins.plumber())
-        .pipe(plugins.order(jsOrder))
+        .pipe(plugins.order(orders.vendorJs))
         .pipe(plugins.concat('vendor.min.js'))
         .pipe(plugins.uglify())
         .pipe(gulp.dest(paths.dist))
@@ -136,7 +143,7 @@ function bowerProd() {
 
 
 function fontsDist() {
-    return gulp.src('bower_components/bootstrap/dist/fonts/*')
+    return gulp.src(['bower_components/bootstrap/dist/fonts/*', 'src/fonts/*'])
         .pipe(plugins.plumber())
         .pipe(gulp.dest(paths.distFonts))
         .pipe(plugins.print());
@@ -188,26 +195,26 @@ function validateGulpfile() {
 }
 
 function bumpVersion(gulpDone) {
-    var package = jsonfile.readFileSync('package.json', 'utf8'),
-        bower = jsonfile.readFileSync('bower.json', 'utf8'),
-        pom = fs.readFileSync('../pom.xml', 'utf8'),
+    var npmJSON = jsonfile.readFileSync('package.json', 'utf8'),
+        bowerJSON = jsonfile.readFileSync('bower.json', 'utf8'),
+        pomXML = fs.readFileSync('../pom.xml', 'utf8'),
         xmlOptions = {
             preserveChildrenOrder: true
         },
         jsonOptions = {
             spaces: 2
         },
-        initialVersion = package.version;
+        initialVersion = npmJSON.version;
 
     transformVersion();
     updateJsonFiles();
     updatePomFile();
 
-    console.log(initialVersion + ' => ' + package.version);
+    console.log(initialVersion + ' => ' + npmJSON.version);
     gulpDone();
 
     function transformVersion() {
-        var version = package.version.split('.');
+        var version = npmJSON.version.split('.');
         for (var i = version.length - 1; i >= 0; i--) {
             version[i]++;
             if (i !== 0 && version[i] >= 10) {
@@ -216,19 +223,19 @@ function bumpVersion(gulpDone) {
                 break;
             }
         }
-        package.version = version.join('.');
+        npmJSON.version = version.join('.');
     }
 
     function updateJsonFiles() {
-        bower.version = package.version;
-        jsonfile.writeFileSync('package.json', package, jsonOptions);
-        jsonfile.writeFileSync('bower.json', bower, jsonOptions);
+        bowerJSON.version = npmJSON.version;
+        jsonfile.writeFileSync('package.json', npmJSON, jsonOptions);
+        jsonfile.writeFileSync('bower.json', bowerJSON, jsonOptions);
     }
 
     function updatePomFile() {
         // xml2js callback is synchronous
-        new xml2js.Parser(xmlOptions).parseString(pom, function (err, result) {
-            result.project.version[0] = package.version;
+        new xml2js.Parser(xmlOptions).parseString(pomXML, function (err, result) {
+            result.project.version[0] = npmJSON.version;
             var xml = new xml2js.Builder(xmlOptions).buildObject(result);
             fs.writeFileSync('../pom.xml', xml);
         });

@@ -6,7 +6,7 @@ angular
             var vm = this;
             console.log('Initializing Sponsors Controller...');
 
-            vm.addSponsor = addSponsor;
+            vm.addVenue = addSponsor;
 
             (function init() {
                 SponsorService().then(function success(data) {

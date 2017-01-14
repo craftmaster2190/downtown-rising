@@ -2,12 +2,11 @@
 @import 'components/nav/nav';
 @import 'components/footer/footer';
 @import 'components/footer/social_icon';
-@import 'components/sponsors/sponsors';
 
 @font-face {
   font-family: 'archivo_blackregular';
-  src: url('images/archivoblack-webfont.woff2') format('woff2'),
-  url('images/archivoblack-webfont.woff') format('woff');
+  src: url('fonts/archivoblack-webfont.woff2') format('woff2'),
+  url('fonts/archivoblack-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -53,6 +52,9 @@ a {
     outline: 0;
     text-decoration: none;
     color: black;
+    &.no-pointer {
+      cursor: default;
+    }
   }
 }
 
@@ -66,5 +68,15 @@ a {
   }
   column-gap: 0;
   width: 100%;
+  > * {
+    display: inline-block;
+    width: 100%;
+
+    img {
+      width: 100%;
+      padding: 8px;
+      border-radius: 24px;
+    }
+  }
 }
 

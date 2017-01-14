@@ -7,3 +7,9 @@
     they play. I also feel like we should link to each artist's personal website or a page on the City Weekly site for
     each band.
 </div>
+<div class="masonry">
+    <lineup-obj model="lineup" ng-repeat="lineup in $ctrl.lineups"></lineup-obj>
+</div>
+<div>
+    <button class="btn btn-default" ng-click="$ctrl.addLineup()">New Lineup</button>
+</div>

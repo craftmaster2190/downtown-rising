@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * Created by bryce_fisher on 1/4/17.
  */
 @MappedSuperclass
-public class CommonEntity {
+public abstract class CommonEntity {
     private Long id;
     private LocalDateTime createdOn;
     private String createdBy;

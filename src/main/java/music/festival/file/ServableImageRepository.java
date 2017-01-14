@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
  * Created by bryce_fisher on 1/12/17.
  */
 @Repository
-public interface ServableFileRepository extends PagingAndSortingRepository<ServableFile, Long> {
+public interface ServableImageRepository extends PagingAndSortingRepository<ServableImage, Long> {
 }

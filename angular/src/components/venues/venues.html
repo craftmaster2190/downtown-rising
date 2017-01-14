@@ -5,3 +5,9 @@
     This page needs to be a list of the 6-8 venues. Each venue would have name and basic info such as address and then
     you can click on the logo to go to their page on the City Weekly site.
 </div>
+<div class="masonry">
+    <venue-obj model="venue" ng-repeat="venue in $ctrl.venues"></venue-obj>
+</div>
+<div>
+    <button class="btn btn-default" ng-click="$ctrl.addVenue()">New Venue</button>
+</div>
