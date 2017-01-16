@@ -6,18 +6,19 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * Created by bryce_fisher on 1/4/17.
  */
 @MappedSuperclass
-public abstract class CommonEntity {
+public abstract class CommonEntity implements Serializable {
     private Long id;
     private LocalDateTime createdOn = LocalDateTime.now();
-    private String createdBy;
+    private String createdBy = "System";
     private LocalDateTime updatedOn = LocalDateTime.now();
-    private String updatedBy;
+    private String updatedBy = "System";
 
     @Id
     @GeneratedValue
@@ -48,6 +49,7 @@ public abstract class CommonEntity {
         this.updatedOn = updatedOn;
     }
 
+    @Column(updatable = false)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public String getCreatedBy() {
         return createdBy;

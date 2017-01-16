@@ -33,6 +33,9 @@ angular
             }
 
             function getPath() {
+                if (!path) {
+                    throw new Error("Undefined path");
+                }
                 return path;
             }
 

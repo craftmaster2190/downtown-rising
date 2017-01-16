@@ -4,8 +4,9 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Created by bryce_fisher on 1/15/17.
+ * Created by bryce_fisher on 1/16/17.
  */
 @Repository
-public interface SessionRepository extends PagingAndSortingRepository<Session, Long> {
+public interface RoleRepository extends PagingAndSortingRepository<Role, Long> {
+    Role findByName(String name);
 }
