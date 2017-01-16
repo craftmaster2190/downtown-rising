@@ -1,1 +1,1 @@
-RootEntity('venueObj', 'components/venues/venue-obj.html', 'VenueService')
+RootEntity('venueObj', 'components/venues/venue-obj.html', 'VenueService');

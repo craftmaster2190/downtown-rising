@@ -27,7 +27,7 @@ var orders = {};
 orders.vendorJs = ['jquery.js',
     'bootstrap.js',
     'angular.js'];
-orders.appJs = ['RootEntity.js',
+orders.appJs = ['**/RootEntity.js',
     'index.js'];
 
 //PIPE FUNCTIONS
@@ -71,7 +71,7 @@ function jsProd() {
         .pipe(plugins.iife())
         .pipe(plugins.ngAnnotate())
         .pipe(plugins.concat('index.min.js'))
-        .pipe(plugins.uglify())
+        //.pipe(plugins.uglify())
         .pipe(gulp.dest(paths.dist))
         .pipe(plugins.print());
 }
@@ -130,7 +130,7 @@ function bowerProd() {
         .pipe(plugins.plumber())
         .pipe(plugins.order(orders.vendorJs))
         .pipe(plugins.concat('vendor.min.js'))
-        .pipe(plugins.uglify())
+        //.pipe(plugins.uglify())
         .pipe(gulp.dest(paths.dist))
         .pipe(plugins.print());
     var bowerCss = gulp.src(mainBowerFiles('**/*.css'))

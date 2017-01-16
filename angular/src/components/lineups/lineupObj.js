@@ -1,1 +1,1 @@
-RootEntity('lineupObj', 'components/lineups/lineup-obj.html', 'LineupService')
+RootEntity('lineupObj', 'components/lineups/lineup-obj.html', 'LineupService');

@@ -18,6 +18,10 @@ public abstract class ImageEntityController<T extends ImageEntity> {
 
     @Autowired
     ServableImageRepository servableImageRepository;
+
+    @Autowired
+    ImageResizerService imageResizerService;
+
     private PagingAndSortingRepository<T, Long> repository;
 
     public ImageEntityController(PagingAndSortingRepository<T, Long> repository) {
@@ -61,7 +65,13 @@ public abstract class ImageEntityController<T extends ImageEntity> {
         if (t == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         try {
-            t.setImage(new ServableImage(file));
+            byte[] fileBytes = file.getBytes();
+            byte[] scaledImageBytes = imageResizerService.scaleImage(fileBytes);
+
+            ServableImage servableImage = new ServableImage();
+            servableImage.setBytes(scaledImageBytes);
+
+            t.setImage(servableImage);
             t = repository.save(t);
             return new ResponseEntity<>(t, HttpStatus.ACCEPTED);
         } catch (IOException e) {

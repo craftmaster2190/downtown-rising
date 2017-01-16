@@ -1,1 +1,1 @@
-RootEntity('sponsorObj', 'components/sponsors/sponsor-obj.html', 'SponsorService')
+RootEntity('sponsorObj', 'components/sponsors/sponsor-obj.html', 'SponsorService');

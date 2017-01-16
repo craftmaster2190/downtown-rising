@@ -1,3 +1,4 @@
+window.RootEntity = RootEntity;
 function RootEntity(objName, templateUrl, serviceName) {
     console.log('Declaring ' + objName + ' (' + templateUrl + ') ...');
     angular

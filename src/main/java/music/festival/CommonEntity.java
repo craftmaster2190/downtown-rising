@@ -2,6 +2,7 @@ package music.festival;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -13,9 +14,9 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class CommonEntity {
     private Long id;
-    private LocalDateTime createdOn;
+    private LocalDateTime createdOn = LocalDateTime.now();
     private String createdBy;
-    private LocalDateTime updatedOn;
+    private LocalDateTime updatedOn = LocalDateTime.now();
     private String updatedBy;
 
     @Id
@@ -28,6 +29,7 @@ public abstract class CommonEntity {
         this.id = id;
     }
 
+    @Column(updatable = false)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public LocalDateTime getCreatedOn() {
         return createdOn;
