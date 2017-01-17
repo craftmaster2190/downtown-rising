@@ -1,1 +1,9 @@
-<div class="mobile-nav rounded-block" ng-include="'components/nav/nav-link-list.html'"></div>
+<div class="mobile-nav col-xs-12 col-sm-6 col-sm-offset-3">
+    <div class="rounded-block">
+        <div ng-include="'components/nav/nav-link-list.html'"></div>
+        <div class="text-center">
+            <a ng-if="$ctrl.currentUser()" class="logout" href="#" ng-click="$ctrl.logout()">Logout</a>
+            <a ng-if="!$ctrl.currentUser()" class="loginRequest" ui-sref="passes">Login</a>
+        </div>
+    </div>
+</div>

@@ -9,5 +9,7 @@
     <venue-obj model="venue" ng-repeat="venue in $ctrl.venues"></venue-obj>
 </div>
 <div>
-    <button class="btn btn-default" ng-click="$ctrl.addVenue()">New Venue</button>
+    <button ng-if="$ctrl.AuthenticationService.hasRole('ADMIN')" class="btn btn-default" ng-click="$ctrl.addVenue()">New
+        Venue
+    </button>
 </div>

@@ -2,6 +2,8 @@
     <sponsor-obj model="sponsor" ng-repeat="sponsor in $ctrl.sponsors"></sponsor-obj>
 </div>
 <div>
-    <button class="btn btn-default" ng-click="$ctrl.addVenue()">New Sponsor</button>
+    <button ng-if="$ctrl.AuthenticationService.hasRole('ADMIN')" class="btn btn-default" ng-click="$ctrl.addVenue()">New
+        Sponsor
+    </button>
 </div>
 

@@ -1,9 +1,12 @@
 package music.festival.user;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * Created by bryce_fisher on 1/16/17.
  */
-public class Login {
+@JsonInclude
+public class LoginRequest {
     private String username;
     private String password;
 

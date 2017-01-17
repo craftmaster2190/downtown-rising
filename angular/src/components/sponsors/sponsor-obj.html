@@ -23,7 +23,8 @@
                 <optional-img image-id="::$ctrl.model.imageId"></optional-img>
                 <div ng-bind="::$ctrl.model.text"></div>
             </a>
-            <button class="btn btn-default" ng-click="$ctrl.changeMode()"><i class="glyphicon glyphicon-pencil"></i>
+            <button ng-if="$ctrl.AuthenticationService.hasRole('ADMIN')" class="btn btn-default"
+                    ng-click="$ctrl.changeMode()"><i class="glyphicon glyphicon-pencil"></i>
             </button>
         </div>
     </div>

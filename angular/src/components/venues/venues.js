@@ -2,11 +2,12 @@ angular
     .module('rising')
     .component('venues', {
         templateUrl: 'components/venues/venues.html',
-        controller: function (VenueService) {
+        controller: function (VenueService, AuthenticationService) {
             var vm = this;
             console.log('Initializing Venues Controller...');
 
             vm.addVenue = addVenue;
+            vm.AuthenticationService = AuthenticationService;
 
             (function init() {
                 VenueService().then(function success(data) {

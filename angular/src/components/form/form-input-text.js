@@ -4,7 +4,8 @@ angular
         bindings: {
             title: '@',
             model: '=',
-            placeholder: '@'
+            placeholder: '@',
+            required: '='
         },
         templateUrl: 'components/form/form-input-text.html',
         controller: function () {

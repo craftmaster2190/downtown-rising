@@ -2,12 +2,9 @@ package music.festival;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Created by bryce_fisher on 1/4/17.
@@ -15,9 +12,9 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class CommonEntity implements Serializable {
     private Long id;
-    private LocalDateTime createdOn = LocalDateTime.now();
+    private Date createdOn = new Date();
     private String createdBy = "System";
-    private LocalDateTime updatedOn = LocalDateTime.now();
+    private Date updatedOn = new Date();
     private String updatedBy = "System";
 
     @Id
@@ -31,21 +28,23 @@ public abstract class CommonEntity implements Serializable {
     }
 
     @Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public LocalDateTime getCreatedOn() {
+    public Date getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(LocalDateTime createdOn) {
+    public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public LocalDateTime getUpdatedOn() {
+    public Date getUpdatedOn() {
         return updatedOn;
     }
 
-    public void setUpdatedOn(LocalDateTime updatedOn) {
+    public void setUpdatedOn(Date updatedOn) {
         this.updatedOn = updatedOn;
     }
 

@@ -2,11 +2,12 @@ angular
     .module('rising')
     .component('sponsors', {
         templateUrl: 'components/sponsors/sponsors.html',
-        controller: function (SponsorService) {
+        controller: function (SponsorService, AuthenticationService) {
             var vm = this;
             console.log('Initializing Sponsors Controller...');
 
             vm.addVenue = addSponsor;
+            vm.AuthenticationService = AuthenticationService;
 
             (function init() {
                 SponsorService().then(function success(data) {

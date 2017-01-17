@@ -56,7 +56,7 @@ public abstract class ImageEntityController<T extends ImageEntity> {
                 t.setImage(currentSponsor.getImage());
         }
         t = repository.save(t);
-        return new ResponseEntity<>(t, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(t, HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}")
@@ -73,7 +73,7 @@ public abstract class ImageEntityController<T extends ImageEntity> {
 
             t.setImage(servableImage);
             t = repository.save(t);
-            return new ResponseEntity<>(t, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(t, HttpStatus.CREATED);
         } catch (IOException e) {
             return new ResponseEntity<>(t, HttpStatus.BAD_REQUEST);
         }

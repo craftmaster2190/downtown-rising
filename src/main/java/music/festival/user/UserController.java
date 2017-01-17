@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,16 +35,30 @@ public class UserController {
     @Autowired
     RoleService roleService;
 
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @RequestMapping(path = "/login", method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<User> login(Login login,
+    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest,
                                       HttpServletRequest request, HttpServletResponse response) {
-        return login(login.getUsername(), login.getPassword(), request, response);
+        return login(loginRequest.getUsername(), loginRequest.getPassword(), request, response, true);
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<User> login(@RequestParam String username, @RequestParam String password,
                                       HttpServletRequest request, HttpServletResponse response) {
+        return login(username, password, request, response, true);
+    }
+
+    public ResponseEntity<User> login(String username, String password,
+                                      HttpServletRequest request, HttpServletResponse response, boolean yolo) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            User user = (User) (authentication.getPrincipal());
+            return new ResponseEntity<>(user, HttpStatus.ALREADY_REPORTED);
+        }
+
         User user = userRepository.findByEmail(username);
         if (user != null) {
             try {
@@ -66,20 +81,20 @@ public class UserController {
 
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<User> currentUser(@AuthenticationPrincipal User user) {
         if (user == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+        if (authentication instanceof AnonymousAuthenticationToken) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
         if (authentication != null) {
@@ -97,7 +112,54 @@ public class UserController {
         user.setRoles(roleService.getDefaultRoles());
 
         User newUser = userService.saveOrUpdate(user);
-        return new ResponseEntity<>(newUser, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<User> save(@RequestBody User user) {
+        System.out.println("user " + user.getId());
+        user = userRepository.findOne(user.getId());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loggedInUser = (User) (authentication.getPrincipal());
+        if (authentication instanceof AnonymousAuthenticationToken || loggedInUser.getId() != user.getId()) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        user.setRoles(loggedInUser.getRoles());
+
+        User newUser = userService.saveOrUpdate(user);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<User> password(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        if (!changePasswordRequest.isValid()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        User user = userRepository.findByEmail(changePasswordRequest.getUsername());
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loggedInUser = (User) (authentication.getPrincipal());
+        if (authentication instanceof AnonymousAuthenticationToken || loggedInUser.getId() != user.getId()) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        String oldPassword = bCryptPasswordEncoder.encode(changePasswordRequest.getOldPassword());
+        if (user.getPassword().equals(oldPassword)) {
+            String newPassword = bCryptPasswordEncoder.encode(changePasswordRequest.getNewPassword());
+            user.setPassword(newPassword);
+        }
+
+        User newUser = userRepository.save(user);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
 }

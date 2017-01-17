@@ -17,10 +17,10 @@ navigation {
 
   a {
     margin: $nav-button-spacing 0;
-    padding: $nav-button-spacing;
+    padding: $nav-button-spacing ($nav-button-spacing / 2);
     border-radius: 35px;
 
-    &.dates {
+    &.dates, &.logout, &.login {
       float: right;
       font-size: $font-size;
       line-height: $font-size;
@@ -45,7 +45,7 @@ navigation {
 
       &:hover, &.active {
         margin: 0;
-        padding: ($nav-button-spacing * 2) $nav-button-spacing;
+        padding: ($nav-button-spacing * 2) ($nav-button-spacing / 2);
         border-radius: 0;
       }
     }
@@ -81,8 +81,15 @@ navigation {
     nav-link {
       display: none;
       &.mobile-button {
+        float: right;
         display: inline-block;
       }
+    }
+  }
+
+  @media screen and (max-width: 700px) {
+    a.logout, a.login {
+      display: none;
     }
   }
 
@@ -97,12 +104,12 @@ navigation {
   nav-link {
     display: block;
     text-align: center;
-    font-size: 200%;
     margin: 3px;
-    a {
-      padding: 8px 35px;
-      border-radius: 25px;
-    }
+  }
+  a {
+    font-size: 200%;
+    padding: 8px 35px;
+    border-radius: 25px;
   }
 
   @for $i from 1 through length($nav-colors) {

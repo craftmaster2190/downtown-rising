@@ -8,8 +8,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,9 +19,10 @@ import java.util.List;
 @Entity
 public class User extends ImageEntity implements UserDetails {
     private String password;
-    private List<Role> roles;
-    private List<Pass> passes;
-    private LocalDate birthdate;
+    private List<Role> roles = new ArrayList<>();
+    private List<Pass> passes = new ArrayList<>();
+    ;
+    private Date birthdate;
     private String gender;
     private String address;
     private String phone;
@@ -81,11 +83,12 @@ public class User extends ImageEntity implements UserDetails {
         this.passes = passes;
     }
 
-    public LocalDate getBirthdate() {
+    @Temporal(TemporalType.DATE)
+    public Date getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(LocalDate birthdate) {
+    public void setBirthdate(Date birthdate) {
         this.birthdate = birthdate;
     }
 

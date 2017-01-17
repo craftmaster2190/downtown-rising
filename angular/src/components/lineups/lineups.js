@@ -2,11 +2,12 @@ angular
     .module('rising')
     .component('lineups', {
         templateUrl: 'components/lineups/lineups.html',
-        controller: function (LineupService) {
+        controller: function (LineupService, AuthenticationService) {
             var vm = this;
             console.log('Initializing Lineups Controller...');
 
             vm.addLineup = addLineup;
+            vm.AuthenticationService = AuthenticationService;
 
             (function init() {
                 LineupService().then(function success(data) {

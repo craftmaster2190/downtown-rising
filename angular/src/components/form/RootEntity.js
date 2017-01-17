@@ -8,7 +8,7 @@ function RootEntity(objName, templateUrl, serviceName) {
                 model: '='
             },
             templateUrl: templateUrl,
-            controller: function (MultipartFileService, $state, $injector) {
+            controller: function (MultipartFileService, $state, AuthenticationService, $injector) {
                 var vm = this,
                     service;
                 console.log('Initializing ' + objName + ' Controller...');
@@ -16,6 +16,8 @@ function RootEntity(objName, templateUrl, serviceName) {
                 $injector.invoke([serviceName, function (serviceImpl) {
                     service = serviceImpl;
                 }]);
+
+                vm.AuthenticationService = AuthenticationService;
 
                 vm.changeMode = changeMode;
                 vm.updateImage = updateImage;
