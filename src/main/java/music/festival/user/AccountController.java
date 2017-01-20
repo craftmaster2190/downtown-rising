@@ -36,17 +36,17 @@ public class AccountController {
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<Account> login(@RequestBody LoginRequest loginRequest,
                                          HttpServletRequest request, HttpServletResponse response) {
-        return login(loginRequest.getUsername(), loginRequest.getPassword(), request, response, true);
+        return doLogin(loginRequest.getUsername(), loginRequest.getPassword(), request, response);
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Account> login(@RequestParam String username, @RequestParam String password,
                                          HttpServletRequest request, HttpServletResponse response) {
-        return login(username, password, request, response, true);
+        return doLogin(username, password, request, response);
     }
 
-    public ResponseEntity<Account> login(String username, String password,
-                                         HttpServletRequest request, HttpServletResponse response, boolean yolo) {
+    private ResponseEntity<Account> doLogin(String username, String password,
+                                            HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             Account account = (Account) (authentication.getPrincipal());

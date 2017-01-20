@@ -22,6 +22,16 @@
         <button class="btn btn-default" ng-click="$ctrl.forgotPassword = false">Back to Login</button>
     </div>
     <div ng-if="$ctrl.currentUser()" class="rounded-block">
+        <h3 ng-if="$ctrl.currentUser().name" ng-bind="$ctrl.currentUser().name"></h3>
+        <p ng-if="$ctrl.currentUser().email"><b ng-bind="$ctrl.currentUser().email"></b></p>
+        <a ui-sref="registration">
+            <button class="btn btn-default">Account</button>
+        </a>
+        <a ui-sref="password">
+            <button class="btn btn-default">Change Password</button>
+        </a>
+    </div>
+    <div ng-if="$ctrl.currentUser()" class="rounded-block">
         <h3>Attach a pass</h3>
         <form-input-text title="Pass Barcode"></form-input-text>
         <button class="btn btn-default">City Weekly <i class="glyphicon glyphicon-new-window"></i></button>

@@ -7,7 +7,7 @@ function routesDebugConfig($rootScope) {
     //     console.log('%c$stateChangeStart to ' + toState.name + ' - fired when the transition begins.', 'color:blue');
     // });
 
-    $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams) {
+    $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams) {
         console.log('%c$stateChangeError - fired when an error occurs during transition.', 'color:red');
     });
 

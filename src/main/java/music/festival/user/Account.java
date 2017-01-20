@@ -100,6 +100,7 @@ public class Account extends ImageEntity implements UserDetails {
         this.gender = gender;
     }
 
+    @Lob
     public String getAddress() {
         return address;
     }
@@ -116,7 +117,7 @@ public class Account extends ImageEntity implements UserDetails {
         this.phone = phone;
     }
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     public String getEmail() {
         return email;
     }
@@ -140,5 +141,12 @@ public class Account extends ImageEntity implements UserDetails {
     @Override
     public String getUsername() {
         return getEmail();
+    }
+
+    @Override
+    public String toString() {
+        if (getUsername() != null)
+            return getUsername();
+        return super.toString();
     }
 }

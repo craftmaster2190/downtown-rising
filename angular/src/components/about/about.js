@@ -2,7 +2,7 @@ angular
     .module('rising')
     .component('about', {
         templateUrl: 'components/about/about.html',
-        controller: function() {
+        controller: function () {
             console.log('Initializing About Controller...');
         }
     });

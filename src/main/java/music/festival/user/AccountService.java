@@ -1,5 +1,6 @@
 package music.festival.user;
 
+import music.festival.ConfigurationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.math.BigInteger;
-import java.security.SecureRandom;
 
 /**
  * Created by bryce_fisher on 1/15/17.
@@ -25,6 +24,8 @@ public class AccountService implements UserDetailsService {
     AccountRepository userRepository;
     @Autowired
     RoleService roleService;
+    @Autowired
+    ConfigurationService configurationService;
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
     private Logger logger = LoggerFactory.getLogger(AccountService.class);
 
@@ -83,7 +84,7 @@ public class AccountService implements UserDetailsService {
         if (!userExists("downtown")) {
             Account adminAccount = new Account();
             adminAccount.setName("admin");
-            adminAccount.setPassword(generateDefaultPassword(20));
+            adminAccount.setPassword(configurationService.defaultAdminPassword());
             adminAccount.setEmail("admin");
             adminAccount.setRoles(roleService.getAdminRoles());
             logger.info("\n\t[\n\t\tAdmin user created with name / password: " +
@@ -93,18 +94,5 @@ public class AccountService implements UserDetailsService {
         }
     }
 
-    /**
-     * Generate a random alphanumeric password with dashes between every 5 characters
-     *
-     * @param maxLength
-     * @return
-     */
-    private String generateDefaultPassword(int maxLength) {
-        SecureRandom random = new SecureRandom();
-        String password = new BigInteger(130, random).toString(Character.MAX_RADIX);
-        if (password.length() > maxLength)
-            password = password.substring(0, maxLength);
-        // Insert dashes every 5 characters
-        return String.join("-", password.split("(?<=\\G.{5})"));
-    }
+
 }

@@ -2,7 +2,7 @@ angular
     .module('rising')
     .component('contact', {
         templateUrl: 'components/contact/contact.html',
-        controller: function() {
+        controller: function () {
             console.log('Initializing Contact Controller...');
         }
     });

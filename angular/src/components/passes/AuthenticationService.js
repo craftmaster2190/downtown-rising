@@ -14,6 +14,7 @@ angular
         return AuthenticationService;
 
         function AuthenticationService() {
+            // console.log('currentUser', currentUser);
             return currentUser;
         }
 
@@ -33,15 +34,15 @@ angular
             return handlePromise($http.post('/auth/logout'));
         }
 
-        function register(user) {
-            return handlePromise($http.post('/auth/register', user))
+        function register(account) {
+            return handlePromise($http.post('/auth/register', account))
                 .then(function success(newUser) {
-                    return login(user.email, user.password);
+                    return login(account.email, account.password);
                 });
         }
 
-        function save(user) {
-            return handlePromise($http.post('/auth/save', user));
+        function save(account) {
+            return handlePromise($http.post('/auth/save', account));
         }
 
         function hasRole(roleName) {

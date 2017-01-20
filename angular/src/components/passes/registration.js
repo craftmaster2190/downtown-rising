@@ -13,8 +13,8 @@ angular
             vm.save = save;
 
             (function init() {
-                AuthenticationService.get().then(function success(user) {
-                    vm.user = user;
+                AuthenticationService.get().then(function success(account) {
+                    vm.account = account;
                 });
 
                 vm.dateOptions = {
@@ -23,8 +23,8 @@ angular
             })();
 
             $scope.$watch(function watch() {
-                if (vm.user) {
-                    return vm.user.password === vm.confirmPassword;
+                if (vm.account) {
+                    return vm.account.password === vm.confirmPassword;
                 }
                 return;
             }, function update(newValue) {
@@ -36,8 +36,8 @@ angular
             });
 
 
-            function register(user) {
-                return AuthenticationService.register(user)
+            function register(account) {
+                return AuthenticationService.register(account)
                     .then(function success() {
                         $state.go("passes");
                     }, function failure(response) {
@@ -47,8 +47,8 @@ angular
                     });
             }
 
-            function save(user) {
-                return AuthenticationService.save(user)
+            function save(account) {
+                return AuthenticationService.save(account)
                     .then(function success() {
                         $state.reload();
                     });
@@ -59,8 +59,8 @@ angular
             }
 
             function isYoung() {
-                if (vm.user && vm.user.birthdate) {
-                    if (vm.user.birthdate > date21YearsAgo) {
+                if (vm.account && vm.account.birthdate) {
+                    if (vm.account.birthdate > date21YearsAgo) {
                         return true;
                     }
                 }

@@ -1,6 +1,8 @@
 package music.festival;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,6 +18,17 @@ public abstract class CommonEntity implements Serializable {
     private String createdBy = "System";
     private Date updatedOn = new Date();
     private String updatedBy = "System";
+
+    public CommonEntity() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object loggedInAccount = authentication.getPrincipal();
+            if (loggedInAccount != null) {
+                createdBy = loggedInAccount.toString();
+                updatedBy = loggedInAccount.toString();
+            }
+        }
+    }
 
     @Id
     @GeneratedValue
