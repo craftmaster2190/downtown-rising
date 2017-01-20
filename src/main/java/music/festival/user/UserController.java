@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,16 +26,11 @@ public class UserController {
     UserService userService;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
     RoleService roleService;
 
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @RequestMapping(path = "/login", method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -59,11 +53,10 @@ public class UserController {
             return new ResponseEntity<>(user, HttpStatus.ALREADY_REPORTED);
         }
 
-        User user = userRepository.findByEmail(username);
+        User user = userService.findByEmail(username);
         if (user != null) {
             try {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(user, password, user.getAuthorities());
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = userService.getUsernamePasswordAuthenticationToken(user, password);
 
                 authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
@@ -74,7 +67,6 @@ public class UserController {
                 request.getSession(true);
             } catch (Exception e) {
                 SecurityContextHolder.getContext().setAuthentication(null);
-                e.printStackTrace();
                 user = null;
             }
         }
@@ -85,14 +77,18 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<User> currentUser(@AuthenticationPrincipal User user) {
+    public ResponseEntity<User> currentUser(@AuthenticationPrincipal User user, HttpServletRequest request, HttpServletResponse response) {
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        User userFromDB = userService.findById(user.getId());
+        if (userFromDB == null) {
+            return logout(request, response);
+        }
+        return new ResponseEntity<>(userFromDB, HttpStatus.OK);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<User> logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -111,27 +107,26 @@ public class UserController {
 
         user.setRoles(roleService.getDefaultRoles());
 
-        User newUser = userService.saveOrUpdate(user);
+        User newUser = userService.saveAndUpdatePassword(user);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/save")
-    public ResponseEntity<User> save(@RequestBody User user) {
-        System.out.println("user " + user.getId());
-        user = userRepository.findOne(user.getId());
-        if (user == null) {
+    public ResponseEntity<User> save(@RequestBody User userToUpdate) {
+        User currentUserInDB = userService.findById(userToUpdate.getId());
+        if (currentUserInDB == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User loggedInUser = (User) (authentication.getPrincipal());
-        if (authentication instanceof AnonymousAuthenticationToken || loggedInUser.getId() != user.getId()) {
+        if (authentication instanceof AnonymousAuthenticationToken || loggedInUser.getId() != userToUpdate.getId()) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        user.setRoles(loggedInUser.getRoles());
+        userToUpdate.setRoles(loggedInUser.getRoles());
 
-        User newUser = userService.saveOrUpdate(user);
+        User newUser = userService.updateWithoutChangingPassword(userToUpdate);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
@@ -141,7 +136,7 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        User user = userRepository.findByEmail(changePasswordRequest.getUsername());
+        User user = userService.findByEmail(changePasswordRequest.getUsername());
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -152,13 +147,13 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        String oldPassword = bCryptPasswordEncoder.encode(changePasswordRequest.getOldPassword());
+        String oldPassword = changePasswordRequest.getOldPassword();
         if (user.getPassword().equals(oldPassword)) {
-            String newPassword = bCryptPasswordEncoder.encode(changePasswordRequest.getNewPassword());
+            String newPassword = changePasswordRequest.getNewPassword();
             user.setPassword(newPassword);
         }
 
-        User newUser = userRepository.save(user);
+        User newUser = userService.saveAndUpdatePassword(user);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 

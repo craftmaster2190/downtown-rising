@@ -17,20 +17,20 @@ public class RoleService {
     RoleRepository roleRepository;
 
     public List<Role> getDefaultRoles() {
-        Role userRole = roleRepository.findByName("USER");
+        Role userRole = roleRepository.findByName("ROLE_USER");
         if (userRole == null) {
             userRole = new Role();
-            userRole.setName("USER");
+            userRole.setName("ROLE_USER");
             userRole = roleRepository.save(userRole);
         }
         return Arrays.asList(userRole);
     }
 
     public List<Role> getAdminRoles() {
-        Role adminRole = roleRepository.findByName("ADMIN");
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
         if (adminRole == null) {
             adminRole = new Role();
-            adminRole.setName("ADMIN");
+            adminRole.setName("ROLE_ADMIN");
             adminRole = roleRepository.save(adminRole);
         }
         List<Role> roleList = getDefaultRoles();

@@ -83,7 +83,7 @@ public class User extends ImageEntity implements UserDetails {
         this.passes = passes;
     }
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getBirthdate() {
         return birthdate;
     }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,6 +48,7 @@ public abstract class ImageEntityController<T extends ImageEntity> {
 
     @PostMapping
     @PutMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<T> save(@RequestBody T t) {
         if (t == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -60,6 +62,7 @@ public abstract class ImageEntityController<T extends ImageEntity> {
     }
 
     @PostMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<T> handlePictureUpload(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         T t = repository.findOne(id);
         if (t == null)
@@ -80,6 +83,7 @@ public abstract class ImageEntityController<T extends ImageEntity> {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<T> deleteOne(@PathVariable Long id) {
         T t = repository.findOne(id);
         if (t == null)

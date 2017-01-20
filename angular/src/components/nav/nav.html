@@ -2,7 +2,7 @@
     <a ui-sref="home" class="downtown-rising"><img src="images/music-logo-trans.png"></a>
     <span ng-include="'components/nav/nav-link-list.html'"></span>
     <a ng-if="$ctrl.currentUser()" class="logout" href="#" ng-click="$ctrl.logout()">Logout</a>
-    <a ng-if="!$ctrl.currentUser()" class="loginRequest" ui-sref="passes">Login</a>
+    <a ng-if="!$ctrl.currentUser()" class="login" ui-sref="passes">Login</a>
     <nav-link class="mobile-button" name="Menu" link="nav"></nav-link>
     <a class="dates" ui-sref="passes">March 2 - 7, 2017</a>
 </div>

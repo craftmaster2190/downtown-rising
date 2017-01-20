@@ -9,7 +9,7 @@
         <div ng-show="$ctrl.invalidCreds"
              class="alert alert-danger" role="alert">Invalid username or password.
         </div>
-        <button class="btn btn-default" ng-click="$ctrl.loginRequest($ctrl.email, $ctrl.password)">Login</button>
+        <button class="btn btn-default" ng-click="$ctrl.login($ctrl.email, $ctrl.password)">Login</button>
         <button class="btn btn-default" ng-click="$ctrl.forgotPassword = true">Forgot?</button>
         <a ui-sref="registration">
             <button class="btn btn-default">Register</button>

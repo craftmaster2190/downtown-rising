@@ -16,6 +16,10 @@ angular
                 AuthenticationService.get().then(function success(user) {
                     vm.user = user;
                 });
+
+                vm.dateOptions = {
+                    maxDate: new Date()
+                };
             })();
 
             $scope.$watch(function watch() {

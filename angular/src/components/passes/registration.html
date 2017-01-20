@@ -34,7 +34,8 @@
                 <div class="input-group">
                     <input type="text" class="form-control" uib-datepicker-popup="longDate"
                            ng-model="$ctrl.user.birthdate"
-                           close-text="Close" is-open="datepopup.opened"/>
+                           close-text="Close" is-open="datepopup.opened" date-options="$ctrl.dateOptions"
+                           alt-input-formats="['yyyy-MM-dd']"/>
                     <span class="input-group-btn">
                          <button type="button" class="btn btn-default"
                                  ng-click="datepopup.opened = !datepopup.opened"><i
