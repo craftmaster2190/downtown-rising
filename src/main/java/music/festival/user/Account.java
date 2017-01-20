@@ -17,7 +17,7 @@ import java.util.List;
  * Created by bryce_fisher on 1/4/17.
  */
 @Entity
-public class User extends ImageEntity implements UserDetails {
+public class Account extends ImageEntity implements UserDetails {
     private String password;
     private List<Role> roles = new ArrayList<>();
     private List<Pass> passes = new ArrayList<>();

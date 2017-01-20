@@ -1,7 +1,7 @@
 package music.festival.passes;
 
 import music.festival.file.ImageEntity;
-import music.festival.user.User;
+import music.festival.user.Account;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -11,16 +11,16 @@ import javax.persistence.OneToOne;
  */
 @Entity
 public class Pass extends ImageEntity {
-    private User user;
+    private Account account;
     private String passBarcode;
 
     @OneToOne
-    public User getUser() {
-        return user;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public String getPassBarcode() {

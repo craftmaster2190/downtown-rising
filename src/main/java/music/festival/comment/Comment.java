@@ -1,7 +1,7 @@
 package music.festival.comment;
 
 import music.festival.CommonEntity;
-import music.festival.user.User;
+import music.festival.user.Account;
 
 import javax.persistence.Entity;
 
@@ -10,7 +10,7 @@ import javax.persistence.Entity;
  */
 @Entity
 public class Comment extends CommonEntity {
-    private User loggedInUser;
+    private Account loggedInAccount;
     private String name;
     private String phone;
     private String email;

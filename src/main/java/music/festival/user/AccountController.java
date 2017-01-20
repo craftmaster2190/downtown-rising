@@ -21,9 +21,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 @RequestMapping("/auth")
-public class UserController {
+public class AccountController {
     @Autowired
-    UserService userService;
+    AccountService accountService;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -34,29 +34,29 @@ public class UserController {
 
     @RequestMapping(path = "/login", method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest,
-                                      HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Account> login(@RequestBody LoginRequest loginRequest,
+                                         HttpServletRequest request, HttpServletResponse response) {
         return login(loginRequest.getUsername(), loginRequest.getPassword(), request, response, true);
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<User> login(@RequestParam String username, @RequestParam String password,
-                                      HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Account> login(@RequestParam String username, @RequestParam String password,
+                                         HttpServletRequest request, HttpServletResponse response) {
         return login(username, password, request, response, true);
     }
 
-    public ResponseEntity<User> login(String username, String password,
-                                      HttpServletRequest request, HttpServletResponse response, boolean yolo) {
+    public ResponseEntity<Account> login(String username, String password,
+                                         HttpServletRequest request, HttpServletResponse response, boolean yolo) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            User user = (User) (authentication.getPrincipal());
-            return new ResponseEntity<>(user, HttpStatus.ALREADY_REPORTED);
+            Account account = (Account) (authentication.getPrincipal());
+            return new ResponseEntity<>(account, HttpStatus.ALREADY_REPORTED);
         }
 
-        User user = userService.findByEmail(username);
-        if (user != null) {
+        Account account = accountService.findByEmail(username);
+        if (account != null) {
             try {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = userService.getUsernamePasswordAuthenticationToken(user, password);
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = accountService.getUsernamePasswordAuthenticationToken(account, password);
 
                 authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
@@ -67,28 +67,28 @@ public class UserController {
                 request.getSession(true);
             } catch (Exception e) {
                 SecurityContextHolder.getContext().setAuthentication(null);
-                user = null;
+                account = null;
             }
         }
 
-        if (user == null)
+        if (account == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(account, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<User> currentUser(@AuthenticationPrincipal User user, HttpServletRequest request, HttpServletResponse response) {
-        if (user == null)
+    public ResponseEntity<Account> currentUser(@AuthenticationPrincipal Account account, HttpServletRequest request, HttpServletResponse response) {
+        if (account == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        User userFromDB = userService.findById(user.getId());
-        if (userFromDB == null) {
+        Account accountFromDB = accountService.findById(account.getId());
+        if (accountFromDB == null) {
             return logout(request, response);
         }
-        return new ResponseEntity<>(userFromDB, HttpStatus.OK);
+        return new ResponseEntity<>(accountFromDB, HttpStatus.OK);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<User> logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Account> logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken) {
             return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -101,60 +101,60 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
-        if (userService.userExists(user.getUsername()))
+    public ResponseEntity<Account> register(@RequestBody Account account) {
+        if (accountService.userExists(account.getUsername()))
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 
-        user.setRoles(roleService.getDefaultRoles());
+        account.setRoles(roleService.getDefaultRoles());
 
-        User newUser = userService.saveAndUpdatePassword(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        Account newAccount = accountService.saveAndUpdatePassword(account);
+        return new ResponseEntity<>(newAccount, HttpStatus.CREATED);
     }
 
     @PostMapping("/save")
-    public ResponseEntity<User> save(@RequestBody User userToUpdate) {
-        User currentUserInDB = userService.findById(userToUpdate.getId());
-        if (currentUserInDB == null) {
+    public ResponseEntity<Account> save(@RequestBody Account accountToUpdate) {
+        Account currentAccountInDB = accountService.findById(accountToUpdate.getId());
+        if (currentAccountInDB == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User loggedInUser = (User) (authentication.getPrincipal());
-        if (authentication instanceof AnonymousAuthenticationToken || loggedInUser.getId() != userToUpdate.getId()) {
+        Account loggedInAccount = (Account) (authentication.getPrincipal());
+        if (authentication instanceof AnonymousAuthenticationToken || loggedInAccount.getId() != accountToUpdate.getId()) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        userToUpdate.setRoles(loggedInUser.getRoles());
+        accountToUpdate.setRoles(loggedInAccount.getRoles());
 
-        User newUser = userService.updateWithoutChangingPassword(userToUpdate);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        Account newAccount = accountService.updateWithoutChangingPassword(accountToUpdate);
+        return new ResponseEntity<>(newAccount, HttpStatus.CREATED);
     }
 
     @PostMapping("/password")
-    public ResponseEntity<User> password(@RequestBody ChangePasswordRequest changePasswordRequest) {
+    public ResponseEntity<Account> password(@RequestBody ChangePasswordRequest changePasswordRequest) {
         if (!changePasswordRequest.isValid()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        User user = userService.findByEmail(changePasswordRequest.getUsername());
-        if (user == null) {
+        Account account = accountService.findByEmail(changePasswordRequest.getUsername());
+        if (account == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User loggedInUser = (User) (authentication.getPrincipal());
-        if (authentication instanceof AnonymousAuthenticationToken || loggedInUser.getId() != user.getId()) {
+        Account loggedInAccount = (Account) (authentication.getPrincipal());
+        if (authentication instanceof AnonymousAuthenticationToken || loggedInAccount.getId() != account.getId()) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         String oldPassword = changePasswordRequest.getOldPassword();
-        if (user.getPassword().equals(oldPassword)) {
+        if (account.getPassword().equals(oldPassword)) {
             String newPassword = changePasswordRequest.getNewPassword();
-            user.setPassword(newPassword);
+            account.setPassword(newPassword);
         }
 
-        User newUser = userService.saveAndUpdatePassword(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        Account newAccount = accountService.saveAndUpdatePassword(account);
+        return new ResponseEntity<>(newAccount, HttpStatus.CREATED);
     }
 
 }

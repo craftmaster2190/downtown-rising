@@ -7,12 +7,12 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 @SpringBootApplication
 public class DowntownApplication extends SpringBootServletInitializer {
-	public static void main(String[] args) {
-		SpringApplication.run(DowntownApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(DowntownApplication.class, args);
+    }
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-		return builder.sources(DowntownApplication.class);
-	}
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(DowntownApplication.class);
+    }
 }
