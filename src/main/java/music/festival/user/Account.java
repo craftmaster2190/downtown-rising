@@ -27,6 +27,7 @@ public class Account extends ImageEntity implements UserDetails {
     private String address;
     private String phone;
     private String email;
+    private String heardAbout;
 
     @Transient
     @JsonIgnore
@@ -148,5 +149,14 @@ public class Account extends ImageEntity implements UserDetails {
         if (getUsername() != null)
             return getUsername();
         return super.toString();
+    }
+
+    @Lob
+    public String getHeardAbout() {
+        return heardAbout;
+    }
+
+    public void setHeardAbout(String heardAbout) {
+        this.heardAbout = heardAbout;
     }
 }

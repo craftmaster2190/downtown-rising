@@ -147,10 +147,11 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        String oldPassword = changePasswordRequest.getOldPassword();
-        if (account.getPassword().equals(oldPassword)) {
-            String newPassword = changePasswordRequest.getNewPassword();
-            account.setPassword(newPassword);
+        try {
+            accountService.getUsernamePasswordAuthenticationToken(account, changePasswordRequest.getOldPassword());
+            account.setPassword(changePasswordRequest.getNewPassword());
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         Account newAccount = accountService.saveAndUpdatePassword(account);

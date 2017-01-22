@@ -4,6 +4,7 @@ angular
         AuthenticationService.get = get;
         AuthenticationService.login = login;
         AuthenticationService.logout = logout;
+        AuthenticationService.updatePassword = updatePassword;
         AuthenticationService.register = register;
         AuthenticationService.save = save;
         AuthenticationService.hasRole = hasRole;
@@ -32,6 +33,17 @@ angular
         function logout() {
             currentUser = null;
             return handlePromise($http.post('/auth/logout'));
+        }
+
+        function updatePassword(changeRequest) {
+            changeRequest.username = currentUser.email;
+            return $http.post('/auth/password', changeRequest)
+                .then(function success(response) {
+                    return response.data;
+                }, function failure(response) {
+                    console.log("Error Response", response);
+                    return $q.reject(response);
+                });
         }
 
         function register(account) {

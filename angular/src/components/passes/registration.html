@@ -24,10 +24,17 @@
         <div ng-show="!$ctrl.confirmPasswordCheck && $ctrl.account.password && $ctrl.confirmPassword"
              class="alert alert-danger" role="alert">Passwords do not match
         </div>
-
         <span ng-if="!$ctrl.currentUser()" style="display:none;">
             <input required="" ng-model="$ctrl.confirmPasswordCheck">
         </span>
+        <div ng-if="!$ctrl.currentUser()" class="form-group">
+            <label for="heardAbout">How did you hear about us?</label>
+            <input id="heardAbout" type="text" ng-model="$ctrl.account.heardAbout"
+                   uib-typeahead="state for state in ['CityWeekly.com', 'Family', 'Friend', 'Internet search',
+                   'Social Media', ' TV', 'Radio', 'Flyer', 'Newspaper']"
+                   class="form-control"
+                   typeahead-open-on-focus="">
+        </div>
         <div class="row">
             <div class="col-xs-12 col-sm-6">
                 <label>Birthdate</label>
@@ -43,7 +50,6 @@
                     </span>
                 </div>
             </div>
-
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                     <label for="gender">Gender</label>
