@@ -1,6 +1,6 @@
 <div ng-switch="$ctrl.edit">
     <div class="rounded-block">
-        <div ng-switch-when="true">
+        <form ng-switch-when="true">
             <form-input-text title="Name" model="$ctrl.model.name"></form-input-text>
             <div class="form-group">
                 <label for="image">Image</label>
@@ -12,18 +12,20 @@
                 <textarea id="text" ng-model="$ctrl.model.text" class="form-control"></textarea>
             </div>
             <form-input-text title="Link" model="$ctrl.model.link"></form-input-text>
-            <button class="btn btn-default" ng-click="$ctrl.changeMode()"><i class="glyphicon glyphicon-ok"></i>
+            <button type="submit" class="btn btn-default" ng-click="$ctrl.changeMode()"><i
+                    class="glyphicon glyphicon-ok"></i>
             </button>
-            <button class="btn btn-danger" ng-click="$ctrl.deleteObj()"><i class="glyphicon glyphicon-remove"></i>
+            <button type="button" class="btn btn-danger" ng-click="$ctrl.deleteObj()"><i
+                    class="glyphicon glyphicon-remove"></i>
             </button>
-        </div>
+        </form>
         <div ng-switch-default>
             <a href="{{::$ctrl.model.link}}" target="_blank" ng-class="{'no-pointer': !$ctrl.model.link}">
                 <h3 ng-bind="::$ctrl.model.name"></h3>
                 <optional-img image-id="::$ctrl.model.imageId"></optional-img>
                 <div ng-bind="::$ctrl.model.text"></div>
             </a>
-            <button ng-if="$ctrl.AuthenticationService.hasRole('ROLE_ADMIN')" class="btn btn-default"
+            <button type="button" ng-if="$ctrl.AuthenticationService.hasRole('ROLE_ADMIN')" class="btn btn-default"
                     ng-click="$ctrl.changeMode()"><i class="glyphicon glyphicon-pencil"></i>
             </button>
         </div>

@@ -26,7 +26,8 @@ paths.distImage = paths.dist + '/images';
 var orders = {};
 orders.vendorJs = ['jquery.js',
     'bootstrap.js',
-    'angular.js'];
+    'angular.js',
+    'rangy-core.js'];
 orders.appJs = ['**/RootEntity.js',
     'index.js'];
 
@@ -143,7 +144,9 @@ function bowerProd() {
 
 
 function fontsDist() {
-    return gulp.src(['bower_components/bootstrap/dist/fonts/*', 'src/fonts/*'])
+    return gulp.src(['bower_components/bootstrap/dist/fonts/*',
+        'bower_components/font-awesome/fonts/*',
+        'src/fonts/*'])
         .pipe(plugins.plumber())
         .pipe(gulp.dest(paths.distFonts))
         .pipe(plugins.print());

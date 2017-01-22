@@ -2,7 +2,7 @@
     <sponsor-obj model="sponsor" ng-repeat="sponsor in $ctrl.sponsors"></sponsor-obj>
 </div>
 <div>
-    <button ng-if="$ctrl.AuthenticationService.hasRole('ROLE_ADMIN')" class="btn btn-default"
+    <button type="button" ng-if="$ctrl.AuthenticationService.hasRole('ROLE_ADMIN')" class="btn btn-default"
             ng-click="$ctrl.addVenue()">New
         Sponsor
     </button>

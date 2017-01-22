@@ -43,7 +43,9 @@ angular
                 return promise.then(function success(response) {
                     return response.data;
                 }, function failure(response) {
-                    console.error(response);
+                    if (response.status !== 404) {
+                        console.error(response);
+                    }
                 });
             }
         }

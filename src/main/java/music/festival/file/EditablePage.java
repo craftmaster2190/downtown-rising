@@ -2,10 +2,7 @@ package music.festival.file;
 
 import music.festival.CommonEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +13,9 @@ import java.util.List;
 public class EditablePage extends CommonEntity {
     private List<EditablePageImage> images = new ArrayList<>();
     private String path;
-    private String title;
     private String html;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public List<EditablePageImage> getImages() {
         return images;
     }
@@ -35,14 +31,6 @@ public class EditablePage extends CommonEntity {
 
     public void setPath(String path) {
         this.path = path;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     @Lob

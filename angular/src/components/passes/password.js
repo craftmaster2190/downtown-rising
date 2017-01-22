@@ -4,7 +4,7 @@ angular
         templateUrl: 'components/passes/password.html',
         controller: function ($scope, AuthenticationService, $state) {
             var vm = this;
-            console.log('Initializing Passes Controller...');
+            console.log('Initializing Password Controller...');
 
             vm.currentUser = currentUser;
             vm.updatePassword = updatePassword;

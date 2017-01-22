@@ -24,7 +24,9 @@
     "angular-touch": "1.5.8",
     "angular-bootstrap": "2.2.0",
     "bootstrap-fileinput": "4.3.6",
-    "angular-upload": "^1.0.12"
+    "angular-upload": "^1.0.12",
+    "angular-sanitize": "1.5.8",
+    "textAngular": "^1.5.16"
   },
   "overrides": {
     "bootstrap": {
@@ -37,6 +39,11 @@
       "main": [
         "item.js",
         "outlayer.js"
+      ]
+    },
+    "font-awesome": {
+      "main": [
+        "css/font-awesome.css"
       ]
     }
   },

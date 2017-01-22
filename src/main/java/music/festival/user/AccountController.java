@@ -1,5 +1,6 @@
 package music.festival.user;
 
+import music.festival.ConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +32,8 @@ public class AccountController {
     @Autowired
     RoleService roleService;
 
+    @Autowired
+    ConfigurationService configurationService;
 
     @RequestMapping(path = "/login", method = RequestMethod.POST,
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
@@ -102,6 +105,8 @@ public class AccountController {
 
     @PostMapping("/register")
     public ResponseEntity<Account> register(@RequestBody Account account) {
+        if (account.getEmail() != null && account.getEmail().length() < configurationService.minLengthOfUsername())
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         if (accountService.userExists(account.getUsername()))
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 
@@ -113,6 +118,8 @@ public class AccountController {
 
     @PostMapping("/save")
     public ResponseEntity<Account> save(@RequestBody Account accountToUpdate) {
+        if (accountToUpdate.getEmail() != null && accountToUpdate.getEmail().length() < configurationService.minLengthOfUsername())
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         Account currentAccountInDB = accountService.findById(accountToUpdate.getId());
         if (currentAccountInDB == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -135,6 +142,9 @@ public class AccountController {
         if (!changePasswordRequest.isValid()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        if (changePasswordRequest.getNewPassword().length() < configurationService.minLengthOfPassword())
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+
 
         Account account = accountService.findByEmail(changePasswordRequest.getUsername());
         if (account == null) {

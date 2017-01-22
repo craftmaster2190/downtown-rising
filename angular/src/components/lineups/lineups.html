@@ -6,5 +6,5 @@
     <lineup-obj model="lineup" ng-repeat="lineup in $ctrl.lineups"></lineup-obj>
 </div>
 <div ng-if="$ctrl.AuthenticationService.hasRole('ROLE_ADMIN')">
-    <button class="btn btn-default" ng-click="$ctrl.addLineup()">New Lineup</button>
+    <button type="button" class="btn btn-default" ng-click="$ctrl.addLineup()">New Lineup</button>
 </div>

@@ -20,6 +20,8 @@ public class ConfigurationService {
     private static final long timeBetweenCheckingToNag = Duration.ofMinutes(15).toMillis();
     @Value("${music.festival.admin.password:#{null}}")
     private String defaultAdminPassword;
+    private int minLengthOfUsername = 4;
+    private int minLengthOfPassword = 8;
 
     public long timeBetweenCheckingToNag() {
         return timeBetweenCheckingToNag;
@@ -45,5 +47,13 @@ public class ConfigurationService {
             password = password.substring(0, maxLength);
         // Insert dashes every 5 characters
         return String.join("-", password.split("(?<=\\G.{5})"));
+    }
+
+    public int minLengthOfUsername() {
+        return minLengthOfUsername;
+    }
+
+    public int minLengthOfPassword() {
+        return minLengthOfPassword;
     }
 }

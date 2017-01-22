@@ -83,8 +83,9 @@ angular
             }, function failure(response) {
                 if (response.status === 401) {
                     currentUser = null;
+                } else {
+                    console.log("Error Response", response);
                 }
-                console.log("Error Response", response);
                 return $q.reject(response);
             });
         }

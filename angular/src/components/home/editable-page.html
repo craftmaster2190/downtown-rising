@@ -1,0 +1,9 @@
+<button type="button" ng-if="$ctrl.AuthenticationService.hasRole('ROLE_ADMIN') && !$ctrl.edit" class="btn btn-default"
+        ng-click="$ctrl.edit = true">{{$ctrl.edit ? 'View' : 'Edit'}}
+</button>
+<div ng-if="$ctrl.edit" class="rounded-block">
+    <h5 ng-bind="::'Page: ' + $ctrl.page.path | titleCase"></h5>
+    <text-angular ng-model="$ctrl.page.html"></text-angular>
+    <button type="button" class="btn btn-default" ng-click="$ctrl.save($ctrl.page)">Save</button>
+</div>
+<div ng-bind-html="$ctrl.getHtml()"></div>
