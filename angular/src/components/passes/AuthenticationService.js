@@ -61,7 +61,7 @@ angular
             if (!currentUser) {
                 return false;
             }
-            console.log('currentUser.roles', currentUser.roles);
+            //console.log('currentUser.roles', currentUser.roles);
             if (currentUser.roles && currentUser.roles.length) {
                 for (var i = currentUser.roles.length - 1; i >= 0; i--) {
                     if (roleName === currentUser.roles[i].name) {

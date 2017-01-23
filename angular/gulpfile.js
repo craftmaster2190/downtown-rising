@@ -58,6 +58,8 @@ function jsDist() {
         .pipe(plugins.order(orders.appJs))
         .pipe(plugins.jshint())
         .pipe(plugins.jshint.reporter('default'))
+        .pipe(plugins.iife())
+        .pipe(plugins.ngAnnotate())
         .pipe(gulp.dest(paths.dist))
         .pipe(plugins.print());
 }
@@ -72,7 +74,7 @@ function jsProd() {
         .pipe(plugins.iife())
         .pipe(plugins.ngAnnotate())
         .pipe(plugins.concat('index.min.js'))
-        //.pipe(plugins.uglify())
+        .pipe(plugins.uglify())
         .pipe(gulp.dest(paths.dist))
         .pipe(plugins.print());
 }
@@ -131,17 +133,18 @@ function bowerProd() {
         .pipe(plugins.plumber())
         .pipe(plugins.order(orders.vendorJs))
         .pipe(plugins.concat('vendor.min.js'))
-        //.pipe(plugins.uglify())
+        .pipe(plugins.uglify())
         .pipe(gulp.dest(paths.dist))
         .pipe(plugins.print());
     var bowerCss = gulp.src(mainBowerFiles('**/*.css'))
+        .pipe(plugins.plumber())
+        .pipe(plugins.autoprefixer())
         .pipe(plugins.cssnano())
         .pipe(plugins.concat('vendor.min.css'))
         .pipe(gulp.dest(paths.dist))
         .pipe(plugins.print());
     return series(bowerJs, bowerCss);
 }
-
 
 function fontsDist() {
     return gulp.src(['bower_components/bootstrap/dist/fonts/*',

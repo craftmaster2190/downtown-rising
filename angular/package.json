@@ -1,6 +1,6 @@
 {
   "name": "downtown",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "downtown rising",
   "main": "src/index.html",
   "scripts": {
@@ -8,6 +8,10 @@
     "build": "node node_modules/gulp/bin/gulp.js build:prod",
     "start": "node node_modules/gulp/bin/gulp.js watch",
     "bump-version": "node node_modules/gulp/bin/gulp.js bump"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/craftmaster2190/downtown-rising.git"
   },
   "author": "Bryce J. Fisher",
   "license": "ISC",
