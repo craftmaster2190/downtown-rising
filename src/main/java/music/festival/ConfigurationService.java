@@ -20,6 +20,13 @@ public class ConfigurationService {
     private static final long timeBetweenCheckingToNag = Duration.ofMinutes(15).toMillis();
     @Value("${music.festival.admin.password:#{null}}")
     private String defaultAdminPassword;
+
+    @Value("${music.festival.cityweekly.rest.username:#{null}}")
+    private String cityWeeklyBasicAuthUsername;
+
+    @Value("${music.festival.cityweekly.rest.password:#{null}}")
+    private String cityWeeklyBasicAuthPassword;
+
     private int minLengthOfUsername = 4;
     private int minLengthOfPassword = 8;
 
@@ -55,5 +62,18 @@ public class ConfigurationService {
 
     public int minLengthOfPassword() {
         return minLengthOfPassword;
+    }
+
+    public boolean isBasicAuthSet() {
+        return cityWeeklyBasicAuthPassword() != null &&
+                cityWeeklyBasicAuthUsername() != null;
+    }
+
+    public String cityWeeklyBasicAuthUsername() {
+        return cityWeeklyBasicAuthUsername;
+    }
+
+    public String cityWeeklyBasicAuthPassword() {
+        return cityWeeklyBasicAuthPassword;
     }
 }

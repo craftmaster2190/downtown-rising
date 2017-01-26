@@ -21,13 +21,14 @@ public class Account extends ImageEntity implements UserDetails {
     private String password;
     private List<Role> roles = new ArrayList<>();
     private List<Pass> passes = new ArrayList<>();
-    ;
     private Date birthdate;
     private String gender;
     private String address;
     private String phone;
     private String email;
     private String heardAbout;
+    private String genrePreferences;
+    private String clientSettings;
 
     @Transient
     @JsonIgnore
@@ -72,16 +73,6 @@ public class Account extends ImageEntity implements UserDetails {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
-    }
-
-    @OneToMany
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public List<Pass> getPasses() {
-        return passes;
-    }
-
-    public void setPasses(List<Pass> passes) {
-        this.passes = passes;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -158,5 +149,23 @@ public class Account extends ImageEntity implements UserDetails {
 
     public void setHeardAbout(String heardAbout) {
         this.heardAbout = heardAbout;
+    }
+
+    //Expected to be a JSON string
+    @Lob
+    public String getClientSettings() {
+        return clientSettings;
+    }
+
+    public void setClientSettings(String clientSettings) {
+        this.clientSettings = clientSettings;
+    }
+
+    public String getGenrePreferences() {
+        return genrePreferences;
+    }
+
+    public void setGenrePreferences(String genrePreferences) {
+        this.genrePreferences = genrePreferences;
     }
 }

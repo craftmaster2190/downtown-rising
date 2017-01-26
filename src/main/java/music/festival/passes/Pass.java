@@ -1,8 +1,10 @@
 package music.festival.passes;
 
-import music.festival.file.ImageEntity;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import music.festival.CommonEntity;
 import music.festival.user.Account;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -10,11 +12,12 @@ import javax.persistence.OneToOne;
  * Created by bryce_fisher on 1/11/17.
  */
 @Entity
-public class Pass extends ImageEntity {
+public class Pass extends CommonEntity {
     private Account account;
-    private String passBarcode;
+    private String cityWeeklyTicketId;
+    private String wristbandBadgeId;
 
-    @OneToOne
+    @OneToOne(optional = false)
     public Account getAccount() {
         return account;
     }
@@ -23,11 +26,23 @@ public class Pass extends ImageEntity {
         this.account = account;
     }
 
-    public String getPassBarcode() {
-        return passBarcode;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(unique = true)
+    public String getCityWeeklyTicketId() {
+        return cityWeeklyTicketId;
     }
 
-    public void setPassBarcode(String passBarcode) {
-        this.passBarcode = passBarcode;
+    public void setCityWeeklyTicketId(String cityWeeklyTicketId) {
+        this.cityWeeklyTicketId = cityWeeklyTicketId;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(unique = true)
+    public String getWristbandBadgeId() {
+        return wristbandBadgeId;
+    }
+
+    public void setWristbandBadgeId(String wristbandBadgeId) {
+        this.wristbandBadgeId = wristbandBadgeId;
     }
 }

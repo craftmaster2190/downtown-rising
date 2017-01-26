@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -80,6 +81,7 @@ public class AccountController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Account> currentUser(@AuthenticationPrincipal Account account, HttpServletRequest request, HttpServletResponse response) {
         if (account == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -91,6 +93,7 @@ public class AccountController {
     }
 
     @PostMapping("/logout")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Account> logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken) {
@@ -117,6 +120,7 @@ public class AccountController {
     }
 
     @PostMapping("/save")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Account> save(@RequestBody Account accountToUpdate) {
         if (accountToUpdate.getEmail() != null && accountToUpdate.getEmail().length() < configurationService.minLengthOfUsername())
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
@@ -138,6 +142,7 @@ public class AccountController {
     }
 
     @PostMapping("/password")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Account> password(@RequestBody ChangePasswordRequest changePasswordRequest) {
         if (!changePasswordRequest.isValid()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

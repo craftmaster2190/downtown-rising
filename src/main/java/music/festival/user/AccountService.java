@@ -1,8 +1,6 @@
 package music.festival.user;
 
 import music.festival.ConfigurationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,8 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Created by bryce_fisher on 1/15/17.
@@ -26,8 +22,8 @@ public class AccountService implements UserDetailsService {
     RoleService roleService;
     @Autowired
     ConfigurationService configurationService;
+
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-    private Logger logger = LoggerFactory.getLogger(AccountService.class);
 
     public Account findById(Long id) {
         return userRepository.findOne(id);
@@ -78,21 +74,4 @@ public class AccountService implements UserDetailsService {
         }
         throw new BadCredentialsException("Password did not match");
     }
-
-    @PostConstruct
-    private void configureDefaultAccount() {
-        if (!userExists("downtown")) {
-            Account adminAccount = new Account();
-            adminAccount.setName("admin");
-            adminAccount.setPassword(configurationService.defaultAdminPassword());
-            adminAccount.setEmail("admin");
-            adminAccount.setRoles(roleService.getAdminRoles());
-            logger.info("\n\t[\n\t\tAdmin user created with name / password: " +
-                    adminAccount.getUsername() + " / " + adminAccount.getPassword() +
-                    "\n\t]");
-            saveAndUpdatePassword(adminAccount);
-        }
-    }
-
-
 }
