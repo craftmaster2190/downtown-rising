@@ -1,6 +1,8 @@
 package music.festival.file;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +32,11 @@ public abstract class ImageEntityController<T extends ImageEntity> {
     }
 
     @GetMapping
-    public ResponseEntity<List<T>> getAll() {
+    public ResponseEntity<List<T>> getAll(@RequestParam(defaultValue = "1", required = false) int page,
+                                          @RequestParam(defaultValue = "id", required = false) String sort) {
         List<T> tList = new ArrayList<>();
-        repository.findAll().forEach(tList::add);
+        PageRequest pageRequest = new PageRequest(page, 50, Sort.Direction.ASC, sort);
+        repository.findAll(pageRequest).forEach(tList::add);
         if (tList.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(tList, HttpStatus.OK);
