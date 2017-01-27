@@ -35,7 +35,7 @@ public abstract class ImageEntityController<T extends ImageEntity> {
     public ResponseEntity<List<T>> getAll(@RequestParam(defaultValue = "1", required = false) int page,
                                           @RequestParam(defaultValue = "id", required = false) String sort) {
         List<T> tList = new ArrayList<>();
-        PageRequest pageRequest = new PageRequest(page, 50, Sort.Direction.ASC, sort);
+        PageRequest pageRequest = new PageRequest(page, 10, Sort.Direction.ASC, sort);
         repository.findAll(pageRequest).forEach(tList::add);
         if (tList.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

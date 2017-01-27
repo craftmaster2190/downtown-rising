@@ -18,13 +18,22 @@ import java.util.List;
  */
 @Entity
 public class Account extends ImageEntity implements UserDetails {
+
+    private String firstName;
+    private String middleInitial;
+    private String lastName;
+    private String address1;
+    private String address2;
+    private String city;
+    private String state;
+    private String zip;
     private String password;
     private List<Role> roles = new ArrayList<>();
     private List<Pass> passes = new ArrayList<>();
-    private Date birthdate;
+    private Date birthDate;
     private String gender;
-    private String address;
     private String phone;
+    private String phoneType;
     private String email;
     private String heardAbout;
     private String genrePreferences;
@@ -76,12 +85,12 @@ public class Account extends ImageEntity implements UserDetails {
     }
 
     @Temporal(TemporalType.TIMESTAMP)
-    public Date getBirthdate() {
-        return birthdate;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setBirthdate(Date birthdate) {
-        this.birthdate = birthdate;
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
     public String getGender() {
@@ -90,15 +99,6 @@ public class Account extends ImageEntity implements UserDetails {
 
     public void setGender(String gender) {
         this.gender = gender;
-    }
-
-    @Lob
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getPhone() {

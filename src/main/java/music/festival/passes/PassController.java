@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/pass")
 public class PassController {
-    private static final String CITY_WEEKLY_URI = "cityweekly.com";
+    private static final String CITY_WEEKLY_URI = "https://textizi.com/api/merchant/badge/";
     @Autowired
     PassRepository passRepository;
     @Autowired
@@ -53,18 +53,26 @@ public class PassController {
 
     @PostMapping("/{ticketId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<Pass> attach(@PathVariable String ticketId) {
+    public ResponseEntity<Pass> swapBadge(@PathVariable String ticketId) {
         Pass pass = passRepository.findByCityWeeklyTicketId(ticketId);
         if (pass == null) {
             //Get from City Weekly
-            AttachPassRequest attachPassRequest = new AttachPassRequest();
-            ResponseEntity<AttachPassResponse> attachPassResponseEntity = restTemplate.postForEntity("/", attachPassRequest, AttachPassResponse.class);
+            SwapPassRequest swapPassRequest = new SwapPassRequest();
+            ResponseEntity<SwapPassResponse> swapPassResponseEntity =
+                    restTemplate.postForEntity("/doSwap", swapPassRequest, SwapPassResponse.class);
 
-            if (attachPassResponseEntity.getStatusCode() == HttpStatus.OK) {
+            if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
                 //TODO handle attachPassResponse
             }
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(pass, HttpStatus.ALREADY_REPORTED);
+    }
+
+    @GetMapping("/{ticketId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Pass> swapStatus(@PathVariable String ticketId) {
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
