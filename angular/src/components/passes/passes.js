@@ -10,6 +10,13 @@ angular
             vm.currentUser = currentUser;
             vm.attachPass = attachPass;
 
+            (function init() {
+                PassService.get()
+                    .then(function success(data) {
+
+                    });
+            })();
+
             function login(email, password) {
                 AuthenticationService.login(email, password)
                     .then(function success() {
@@ -25,8 +32,8 @@ angular
                 return AuthenticationService();
             }
 
-            function attachPass() {
-                PassService.attach();
+            function attachPass(passBarcode) {
+                PassService.attach(passBarcode);
             }
         }
     });

@@ -1,5 +1,6 @@
 package music.festival.passes;
 
+import music.festival.user.Account;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +15,5 @@ public interface PassRepository extends PagingAndSortingRepository<Pass, Long> {
 
     Pass findByWristbandBadgeId(String wristbandBadgeId);
 
-    List<Pass> findByAccount(Long accountId);
+    List<Pass> findByAccount(Account account);
 }

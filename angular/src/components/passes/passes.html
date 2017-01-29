@@ -38,8 +38,10 @@
     </div>
     <form ng-if="$ctrl.currentUser()" class="rounded-block">
         <h3>Attach a pass</h3>
-        <form-input-text title="Pass Barcode"></form-input-text>
-        <button type="submit" class="btn btn-default">Attach</button>
+        <form-input-text title="Pass Barcode" required="true" model="$ctrl.passBarcode"></form-input-text>
+        <button type="submit" class="btn btn-default" ng-disabled="!$ctrl.passBarcode"
+                ng-click="$ctrl.attachPass($ctrl.passBarcode)">Attach
+        </button>
         <button type="button" class="btn btn-default">City Weekly <i class="glyphicon glyphicon-new-window"></i>
         </button>
     </form>

@@ -45,16 +45,20 @@ public class PassController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public List<Pass> get(@AuthenticationPrincipal Account account) {
+    public ResponseEntity<List<Pass>> get(@AuthenticationPrincipal Account account) {
         //Reload account from database, don't depend on data from security context
         account = accountService.findById(account.getId());
-        return passRepository.findByAccount(account.getId());
+        List<Pass> passes = passRepository.findByAccount(account);
+        if (passes != null && !passes.isEmpty())
+            return new ResponseEntity<>(passes, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/{ticketId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<Pass> swapBadge(@PathVariable String ticketId) {
-        Pass pass = passRepository.findByCityWeeklyTicketId(ticketId);
+    public ResponseEntity<Pass> swapBadge(@PathVariable Long ticketId) {
+        //Require ticketId to be a long so that Spring will sanitize the input for us.
+        Pass pass = passRepository.findByCityWeeklyTicketId(ticketId + "");
         if (pass == null) {
             //Get from City Weekly
             SwapPassRequest swapPassRequest = new SwapPassRequest();
@@ -71,8 +75,14 @@ public class PassController {
 
     @GetMapping("/{ticketId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<Pass> swapStatus(@PathVariable String ticketId) {
+    public ResponseEntity<Pass> swapStatus(@PathVariable Long ticketId) {
+        //Get from City Weekly
+        ResponseEntity<SwapPassResponse> swapPassResponseEntity =
+                restTemplate.getForEntity("/swapStatus/" + ticketId, SwapPassResponse.class);
 
+        if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
+            //TODO handle attachPassResponse
+        }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }
