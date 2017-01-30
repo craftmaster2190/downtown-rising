@@ -89,13 +89,20 @@ public class PassController {
         }
         //Get from City Weekly
         SwapPassRequest swapPassRequest = buildSwapPassRequest(pass);
-        ResponseEntity<String> swapPassResponseEntity =
-                restTemplate.postForEntity("/doSwap", swapPassRequest, String.class);
-
-        logger.info("POST swapPassResponse: " + swapPassResponseEntity);
+        ResponseEntity<SwapPassResponse> swapPassResponseEntity =
+                restTemplate.postForEntity("/doSwap", swapPassRequest, SwapPassResponse.class);
 
         if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
-            //TODO handle attachPassResponse
+            SwapPassResponse swapPassResponse = swapPassResponseEntity.getBody();
+            if (swapPassResponse.getSuccess() == 1) {
+                pass.setTicketType(swapPassResponse.getTicketType());
+                pass = passRepository.save(pass);
+                return new ResponseEntity<>(pass, HttpStatus.ACCEPTED);
+            } else {
+                logger.info("POST swapPassResponse return success == 0 (failed): " + swapPassResponse);
+            }
+        } else {
+            logger.info("POST swapPassResponseEntity failed: " + swapPassResponseEntity);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -103,14 +110,47 @@ public class PassController {
     @GetMapping("/{ticketId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Pass> swapStatus(@PathVariable Long ticketId, @AuthenticationPrincipal Account account) {
-        //Get from City Weekly
-        ResponseEntity<String> swapPassResponseEntity =
-                restTemplate.getForEntity("/swapStatus/" + ticketId, String.class);
+        //Require ticketId to be a long so that Spring will sanitize the input for us.
+        // Check if we already have this pass' swap status, no reason to recheck if we have it.
+        Pass pass = passRepository.findByCityWeeklyTicketId(ticketId + "");
 
-        logger.info("GET swapPassResponse: " + swapPassResponseEntity);
+        if (pass == null || pass.getTicketType() == null) {
+            //Get from City Weekly
+            ResponseEntity<SwapPassResponse> swapPassResponseEntity =
+                    restTemplate.getForEntity("/swapStatus/" + ticketId, SwapPassResponse.class);
 
-        if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
-            //TODO handle attachPassResponse
+            if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
+                SwapPassResponse swapPassResponse = swapPassResponseEntity.getBody();
+                switch (swapPassResponse.getStatus()) {
+                    case -1:
+                    case 0:
+                        logger.info("GET swapPassResponse return failure status: " + swapPassResponse);
+                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    case 1:
+                        //TODO Handle valid not swapper
+                        logger.info("GET swapPassResponse return valid not swapper status: " + swapPassResponse);
+                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    case 2:
+                        break;
+                    case 3:
+                    default:
+                        //TODO Handle redeemed, but not swapped
+                        logger.info("GET swapPassResponse return redeemed, but not swapped status: " + swapPassResponse);
+                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                //TODO handle attachPassResponse
+                pass = new Pass();
+                pass.setAccount(accountService.findById(account.getId()));
+                pass.setCityWeeklyTicketId(ticketId + "");
+                pass.setWristbandBadgeId(swapPassResponse.getBadgeNumber());
+                pass.setTicketType(swapPassResponse.getTicketType());
+                pass = passRepository.save(pass);
+            } else {
+                logger.info("GET swapPassResponse failed: " + swapPassResponseEntity);
+            }
+        }
+        if (pass != null && pass.getTicketType() != null) {
+            return new ResponseEntity<>(pass, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

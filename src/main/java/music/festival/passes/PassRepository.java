@@ -4,6 +4,7 @@ import music.festival.user.Account;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -11,9 +12,12 @@ import java.util.List;
  */
 @Repository
 public interface PassRepository extends PagingAndSortingRepository<Pass, Long> {
+    @Transactional
     Pass findByCityWeeklyTicketId(String cityWeeklyTicketId);
 
+    @Transactional
     Pass findByWristbandBadgeId(String wristbandBadgeId);
 
+    @Transactional
     List<Pass> findByAccount(Account account);
 }

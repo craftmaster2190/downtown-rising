@@ -26,6 +26,7 @@ public class Pass extends CommonEntity {
     private Account account;
     private String cityWeeklyTicketId;
     private String wristbandBadgeId;
+    private String ticketType;
 
     @OneToOne(optional = false)
     public Account getAccount() {
@@ -78,5 +79,13 @@ public class Pass extends CommonEntity {
             }
             setWristbandBadgeId(badgeId);
         }
+    }
+
+    public String getTicketType() {
+        return ticketType;
+    }
+
+    public void setTicketType(String ticketType) {
+        this.ticketType = ticketType;
     }
 }

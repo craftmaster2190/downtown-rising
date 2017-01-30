@@ -1,5 +1,7 @@
 package music.festival;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ import java.time.Duration;
  */
 @Service
 public class ConfigurationService {
+    private static final Logger logger = LoggerFactory.getLogger(ConfigurationService.class);
+
     private static final long timeBetweenCheckingToNag = Duration.ofMinutes(15).toMillis();
     @Value("${music.festival.admin.password:#{null}}")
     private String defaultAdminPassword;
