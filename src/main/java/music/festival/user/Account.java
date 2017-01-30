@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import music.festival.file.ImageEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.List;
 public class Account extends ImageEntity implements UserDetails {
 
     private String firstName;
-    private String middleInitial;
+    private String middleName;
     private String lastName;
     private String address1;
     private String address2;
@@ -45,12 +46,21 @@ public class Account extends ImageEntity implements UserDetails {
         this.firstName = firstName;
     }
 
+    @Transient
+    @JsonIgnore
     public String getMiddleInitial() {
-        return middleInitial;
+        if (StringUtils.hasText(middleName)) {
+            return middleName.substring(0, 1);
+        }
+        return null;
     }
 
-    public void setMiddleInitial(String middleInitial) {
-        this.middleInitial = middleInitial;
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
     }
 
     public String getLastName() {

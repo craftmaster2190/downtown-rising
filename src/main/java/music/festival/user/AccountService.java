@@ -46,9 +46,13 @@ public class AccountService implements UserDetailsService {
     }
 
     public Account updateWithoutChangingPassword(Account account) {
-        Account existingAccount = userRepository.findByEmail(account.getEmail());
-        if (existingAccount == null)
-            throw new UsernameNotFoundException(account.getEmail());
+        Account existingAccount = userRepository.findOne(account.getId());
+
+        if (existingAccount == null) {
+            existingAccount = userRepository.findByEmail(account.getEmail());
+            if (existingAccount == null)
+                throw new UsernameNotFoundException(account.getEmail());
+        }
 
         //If account exists, do not allow changing passwords
         if (existingAccount.getPassword() == null) {

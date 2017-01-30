@@ -3,6 +3,8 @@ package music.festival.passes;
 import music.festival.ConfigurationService;
 import music.festival.user.Account;
 import music.festival.user.AccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
@@ -22,14 +24,34 @@ import java.util.List;
 @RequestMapping("/pass")
 public class PassController {
     private static final String CITY_WEEKLY_URI = "https://textizi.com/api/merchant/badge/";
+    private static final Logger logger = LoggerFactory.getLogger(PassController.class);
     @Autowired
     PassRepository passRepository;
     @Autowired
     AccountService accountService;
     @Autowired
     ConfigurationService configurationService;
-
     RestTemplate restTemplate;
+
+    private static SwapPassRequest buildSwapPassRequest(Pass pass) {
+        SwapPassRequest swapPassRequest = new SwapPassRequest();
+        swapPassRequest.setSerialNumber(pass.getCityWeeklyTicketId());
+        swapPassRequest.setBadgeNumber(pass.getWristbandBadgeId());
+        Account account = pass.getAccount();
+        swapPassRequest.setFirstName(account.getFirstName());
+        swapPassRequest.setMiddleInitial(account.getMiddleInitial());
+        swapPassRequest.setLastName(account.getLastName());
+        swapPassRequest.setAddress1(account.getAddress1());
+        swapPassRequest.setAddress2(account.getAddress2());
+        swapPassRequest.setCity(account.getCity());
+        swapPassRequest.setState(account.getState());
+        swapPassRequest.setZip(account.getZip());
+        swapPassRequest.setEmail(account.getEmail());
+        swapPassRequest.setPhone(account.getPhone());
+        swapPassRequest.setPhoneType(account.getPhoneType());
+        logger.info("buildSwapPassRequest: " + swapPassRequest);
+        return swapPassRequest;
+    }
 
     @PostConstruct
     private void configureBasicAuth() {
@@ -56,29 +78,36 @@ public class PassController {
 
     @PostMapping("/{ticketId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<Pass> swapBadge(@PathVariable Long ticketId) {
+    public ResponseEntity<Pass> swapBadge(@PathVariable Long ticketId, @AuthenticationPrincipal Account account) {
         //Require ticketId to be a long so that Spring will sanitize the input for us.
         Pass pass = passRepository.findByCityWeeklyTicketId(ticketId + "");
         if (pass == null) {
-            //Get from City Weekly
-            SwapPassRequest swapPassRequest = new SwapPassRequest();
-            ResponseEntity<SwapPassResponse> swapPassResponseEntity =
-                    restTemplate.postForEntity("/doSwap", swapPassRequest, SwapPassResponse.class);
-
-            if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
-                //TODO handle attachPassResponse
-            }
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            pass = new Pass();
+            pass.setAccount(accountService.findById(account.getId()));
+            pass.setCityWeeklyTicketId(ticketId + "");
+            pass = passRepository.save(pass);
         }
-        return new ResponseEntity<>(pass, HttpStatus.ALREADY_REPORTED);
+        //Get from City Weekly
+        SwapPassRequest swapPassRequest = buildSwapPassRequest(pass);
+        ResponseEntity<String> swapPassResponseEntity =
+                restTemplate.postForEntity("/doSwap", swapPassRequest, String.class);
+
+        logger.info("POST swapPassResponse: " + swapPassResponseEntity);
+
+        if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
+            //TODO handle attachPassResponse
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/{ticketId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<Pass> swapStatus(@PathVariable Long ticketId) {
+    public ResponseEntity<Pass> swapStatus(@PathVariable Long ticketId, @AuthenticationPrincipal Account account) {
         //Get from City Weekly
-        ResponseEntity<SwapPassResponse> swapPassResponseEntity =
-                restTemplate.getForEntity("/swapStatus/" + ticketId, SwapPassResponse.class);
+        ResponseEntity<String> swapPassResponseEntity =
+                restTemplate.getForEntity("/swapStatus/" + ticketId, String.class);
+
+        logger.info("GET swapPassResponse: " + swapPassResponseEntity);
 
         if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
             //TODO handle attachPassResponse

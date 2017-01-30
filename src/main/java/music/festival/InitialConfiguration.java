@@ -40,6 +40,8 @@ public class InitialConfiguration {
             adminAccount.setName(adminName);
             adminAccount.setPassword(configurationService.defaultAdminPassword());
             adminAccount.setEmail(adminName);
+            adminAccount.setFirstName(adminName);
+            adminAccount.setLastName(adminName);
             adminAccount.setRoles(roleService.getAdminRoles());
             logger.info("\n\t[\n\t\tAdmin user created with name / password: " +
                     adminAccount.getUsername() + " / " + adminAccount.getPassword() +

@@ -1,4 +1,4 @@
-<div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3"
+<div class="col-xs-12 col-md-8 col-md-offset-2"
      ng-init="usernameMinlength = 4; passwordMinlength = 8">
     <form novalidate class="rounded-block" name="$ctrl.registrationForm">
         <h3 ng-if="!$ctrl.currentUser()">Register</h3>
@@ -39,10 +39,18 @@
         <div ng-if="!$ctrl.currentUser()" class="form-group">
             <label for="heardAbout">How did you hear about us?</label>
             <input id="heardAbout" type="text" ng-model="$ctrl.account.heardAbout"
-                   uib-typeahead="state for state in ['CityWeekly.com', 'Family', 'Friend', 'Internet search',
+                   uib-typeahead="heardAbout for heardAbout in ['CityWeekly.com', 'Family', 'Friend', 'Internet search',
                    'Social Media', ' TV', 'Radio', 'Flyer', 'Newspaper']"
                    class="form-control"
                    typeahead-open-on-focus="">
+        </div>
+        <div class="row">
+            <form-input-text class="col-xs-12 col-md-4" title="First Name"
+                             model="$ctrl.account.firstName"></form-input-text>
+            <form-input-text class="col-xs-12 col-md-4" title="Middle Name"
+                             model="$ctrl.account.middleName"></form-input-text>
+            <form-input-text class="col-xs-12 col-md-4" title="Last Name"
+                             model="$ctrl.account.lastName"></form-input-text>
         </div>
         <div class="row">
             <div class="col-xs-12 col-sm-6">
@@ -73,9 +81,29 @@
              class="alert alert-info" role="alert">Most venues will serve alcohol and require participants to be 21 and
             older with ID.
         </div>
-        <form-input-text title="Full Name" model="$ctrl.account.name"></form-input-text>
-        <form-input-text title="Address" model="$ctrl.account.address"></form-input-text>
-        <form-input-text title="Phone" model="$ctrl.account.phone"></form-input-text>
+        <div class="row">
+            <form-input-text class="col-xs-12 col-sm-6" title="Address 1"
+                             model="$ctrl.account.address1"></form-input-text>
+            <form-input-text class="col-xs-12 col-sm-6" title="Address 2"
+                             model="$ctrl.account.address2"></form-input-text>
+            <form-input-text class="col-xs-12 col-md-4" title="City" model="$ctrl.account.city"></form-input-text>
+            <form-input-text class="col-xs-12 col-sm-6 col-md-4" title="State"
+                             model="$ctrl.account.state"></form-input-text>
+            <form-input-text class="col-xs-12 col-sm-6 col-md-4" title="Zip"
+                             model="$ctrl.account.zip"></form-input-text>
+        </div>
+        <div class="row">
+            <form-input-text class="col-xs-12 col-sm-6" title="Phone" model="$ctrl.account.phone"></form-input-text>
+            <form-input-text class="col-xs-12 col-sm-6" title="Phone Type"
+                             model="$ctrl.account.phoneType"></form-input-text>
+        </div>
+        <div class="form-group">
+            <label for="genrePreferences">Musical Genre Preference</label>
+            <input id="genrePreferences" type="text" ng-model="$ctrl.account.genrePreferences"
+                   uib-typeahead="genrePreferences for genrePreferences in ['Alternative', 'Rock', 'Pop', 'Grunge', 'Hip hop']"
+                   class="form-control"
+                   typeahead-open-on-focus="">
+        </div>
         <span ng-if="$ctrl.currentUser()">
             <button type="submit" ng-disabled="$ctrl.registrationForm.$invalid && !$ctrl.registrationForm.$dirty "
                     class="btn btn-default"

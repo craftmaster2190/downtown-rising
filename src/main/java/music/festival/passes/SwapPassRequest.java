@@ -1,11 +1,15 @@
 package music.festival.passes;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Created by bryce_fisher on 1/26/17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class SwapPassRequest {
     private String serialNumber;
     private String badgeNumber;
@@ -159,5 +163,14 @@ public class SwapPassRequest {
 
     public void setMusicPreferences(String musicPreferences) {
         this.musicPreferences = musicPreferences;
+    }
+
+    @Override
+    public String toString() {
+        try {
+            return new ObjectMapper().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return super.toString();
+        }
     }
 }
