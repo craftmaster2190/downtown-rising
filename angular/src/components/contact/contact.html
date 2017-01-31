@@ -1,11 +1,19 @@
-<div class="col-xs-12 rounded-block">
-    TODO: Wire up comments.
-</div>
-<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6">
-    <form-input-text title="Name"></form-input-text>
-    <form-input-text title="Phone"></form-input-text>
-    <form-input-text title="Email"></form-input-text>
-    <label for="comment">Comment</label>
-    <textarea id="comment" class="form-control"></textarea>
-    <button type="submit" class="btn btn-default" ng-click="$ctrl.submit()">Submit</button>
-</div>
+<form class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6" name="$ctrl.commentForm">
+    <form-input-text title="Name" model="$ctrl.comment.name" required="true"></form-input-text>
+    <form-input-text title="Phone" model="$ctrl.comment.phone" required="true"></form-input-text>
+    <form-input-text title="Email" model="$ctrl.comment.email" required="true"></form-input-text>
+    <div class="form-group">
+        <label for="comment">Comment</label>
+        <textarea id="comment" class="form-control" ng-model="$ctrl.comment.text" required=""
+                  ng-change="$ctrl.commentSubmitted = null"></textarea>
+    </div>
+    <div class="text-right form-group">
+        <button type="submit" class="btn btn-default" ng-disabled="$ctrl.commentForm.$invalid"
+                ng-click="$ctrl.submit($ctrl.comment)" uib-tooltip="Name, Phone, Email and Comment are all required">
+            Submit
+        </button>
+    </div>
+    <div ng-show="$ctrl.commentSubmitted"
+         class="alert alert-info" role="alert">Your comment has been submitted. Thank you.
+    </div>
+</form>

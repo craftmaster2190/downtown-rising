@@ -34,6 +34,9 @@ public class ConfigurationService {
     private int minLengthOfUsername = 4;
     private int minLengthOfPassword = 8;
 
+    @Value("${music.festival.cityweekly.default.timeout:60000}")
+    private int defaultTimeout;
+
     public long timeBetweenCheckingToNag() {
         return timeBetweenCheckingToNag;
     }
@@ -79,5 +82,9 @@ public class ConfigurationService {
 
     public String cityWeeklyBasicAuthPassword() {
         return cityWeeklyBasicAuthPassword;
+    }
+
+    public int defaultTimeout() {
+        return defaultTimeout;
     }
 }

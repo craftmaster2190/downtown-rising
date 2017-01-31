@@ -35,7 +35,7 @@ public class DEV_MODE_DisableSSLVerification {
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            logger.info("Trusting all SSL Certificates.");
+            logger.info("Trusting all SSL Certificates");
 
             // Create all-trusting host name verifier
             HostnameVerifier allHostsValid = new HostnameVerifier() {
@@ -46,7 +46,7 @@ public class DEV_MODE_DisableSSLVerification {
 
             // Install the all-trusting host verifier
             HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-            logger.info("Trusting all SSL Hosts.");
+            logger.info("Trusting all SSL Hosts");
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             throw new RuntimeException(e);
         }

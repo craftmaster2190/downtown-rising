@@ -20,4 +20,7 @@ public interface PassRepository extends PagingAndSortingRepository<Pass, Long> {
 
     @Transactional
     List<Pass> findByAccount(Account account);
+
+    @Transactional
+    List<Pass> findByAccountAndTicketTypeNotNull(Account account);
 }

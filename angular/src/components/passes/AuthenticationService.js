@@ -20,6 +20,9 @@ angular
         }
 
         function get() {
+            if (currentUser) {
+                return $q.resolve(currentUser);
+            }
             return handlePromise($http.get("auth"));
         }
 

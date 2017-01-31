@@ -3,18 +3,21 @@ package music.festival.passes;
 import music.festival.ConfigurationService;
 import music.festival.user.Account;
 import music.festival.user.AccountService;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +34,8 @@ public class PassController {
     AccountService accountService;
     @Autowired
     ConfigurationService configurationService;
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
+    private HttpHeaders headers;
 
     private static SwapPassRequest buildSwapPassRequest(Pass pass) {
         SwapPassRequest swapPassRequest = new SwapPassRequest();
@@ -55,14 +59,38 @@ public class PassController {
 
     @PostConstruct
     private void configureBasicAuth() {
-        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder().rootUri(CITY_WEEKLY_URI);
-        if (configurationService.isBasicAuthSet()) {
-            restTemplateBuilder.basicAuthorization(
-                    configurationService.cityWeeklyBasicAuthUsername(),
-                    configurationService.cityWeeklyBasicAuthPassword());
+        // Build rest template
+        RestTemplateBuilder restTemplateBuilder =
+                new RestTemplateBuilder().rootUri(CITY_WEEKLY_URI);
+        restTemplateBuilder.setConnectTimeout(configurationService.defaultTimeout());
+        restTemplateBuilder.setReadTimeout(configurationService.defaultTimeout());
+        restTemplate = restTemplateBuilder.build();
+
+        // Allow server to send text/html and treat it like JSON
+        List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
+        for (HttpMessageConverter<?> converter : converters) {
+            if (converter instanceof MappingJackson2HttpMessageConverter) {
+                try {
+                    List<MediaType> supportedMediaTypes = converter.getSupportedMediaTypes();
+                    supportedMediaTypes = new ArrayList<>(supportedMediaTypes);
+                    supportedMediaTypes.add(MediaType.TEXT_HTML);
+                    ((MappingJackson2HttpMessageConverter) converter).setSupportedMediaTypes(supportedMediaTypes);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
 
-        restTemplate = restTemplateBuilder.build();
+        // Build headers
+        headers = new HttpHeaders();
+        if (configurationService.isBasicAuthSet()) {
+            String rawBasicAuthenticationString = configurationService.cityWeeklyBasicAuthUsername() + ':' +
+                    configurationService.cityWeeklyBasicAuthPassword();
+            byte[] base64AuthenticationBytes = Base64.encodeBase64(rawBasicAuthenticationString.getBytes());
+            headers.add(HttpHeaders.AUTHORIZATION, "Basic " + new String(base64AuthenticationBytes));
+        }
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     }
 
     @GetMapping
@@ -70,7 +98,7 @@ public class PassController {
     public ResponseEntity<List<Pass>> get(@AuthenticationPrincipal Account account) {
         //Reload account from database, don't depend on data from security context
         account = accountService.findById(account.getId());
-        List<Pass> passes = passRepository.findByAccount(account);
+        List<Pass> passes = passRepository.findByAccountAndTicketTypeNotNull(account);
         if (passes != null && !passes.isEmpty())
             return new ResponseEntity<>(passes, HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -79,18 +107,21 @@ public class PassController {
     @PostMapping("/{ticketId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Pass> swapBadge(@PathVariable Long ticketId, @AuthenticationPrincipal Account account) {
+        //Reload account from database, don't depend on data from security context
+        account = accountService.findById(account.getId());
+
         //Require ticketId to be a long so that Spring will sanitize the input for us.
         Pass pass = passRepository.findByCityWeeklyTicketId(ticketId + "");
         if (pass == null) {
             pass = new Pass();
             pass.setAccount(accountService.findById(account.getId()));
             pass.setCityWeeklyTicketId(ticketId + "");
-            pass = passRepository.save(pass);
+            pass = passRepository.save(pass); //Save so we generate a Badge ID.
         }
         //Get from City Weekly
-        SwapPassRequest swapPassRequest = buildSwapPassRequest(pass);
-        ResponseEntity<SwapPassResponse> swapPassResponseEntity =
-                restTemplate.postForEntity("/doSwap", swapPassRequest, SwapPassResponse.class);
+        HttpEntity<SwapPassRequest> swapPassRequest = new HttpEntity<>(buildSwapPassRequest(pass), headers);
+        ResponseEntity<SwapPassResponse> swapPassResponseEntity = restTemplate.exchange("/doSwap/",
+                HttpMethod.POST, swapPassRequest, SwapPassResponse.class);
 
         if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
             SwapPassResponse swapPassResponse = swapPassResponseEntity.getBody();
@@ -110,14 +141,18 @@ public class PassController {
     @GetMapping("/{ticketId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Pass> swapStatus(@PathVariable Long ticketId, @AuthenticationPrincipal Account account) {
+        //Reload account from database, don't depend on data from security context
+        account = accountService.findById(account.getId());
+
         //Require ticketId to be a long so that Spring will sanitize the input for us.
         // Check if we already have this pass' swap status, no reason to recheck if we have it.
         Pass pass = passRepository.findByCityWeeklyTicketId(ticketId + "");
 
         if (pass == null || pass.getTicketType() == null) {
             //Get from City Weekly
-            ResponseEntity<SwapPassResponse> swapPassResponseEntity =
-                    restTemplate.getForEntity("/swapStatus/" + ticketId, SwapPassResponse.class);
+            HttpEntity<SwapPassRequest> swapPassRequest = new HttpEntity<>(headers);
+            ResponseEntity<SwapPassResponse> swapPassResponseEntity = restTemplate.exchange("/swapStatus/" + ticketId,
+                    HttpMethod.GET, swapPassRequest, SwapPassResponse.class);
 
             if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
                 SwapPassResponse swapPassResponse = swapPassResponseEntity.getBody();
@@ -127,18 +162,16 @@ public class PassController {
                         logger.info("GET swapPassResponse return failure status: " + swapPassResponse);
                         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                     case 1:
-                        //TODO Handle valid not swapper
-                        logger.info("GET swapPassResponse return valid not swapper status: " + swapPassResponse);
-                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                        logger.info("GET swapPassResponse return valid not swapped status: " + swapPassResponse);
+                        return swapBadge(ticketId, account);
                     case 2:
+                        //Go down to after switch statement and continue from there
                         break;
                     case 3:
                     default:
-                        //TODO Handle redeemed, but not swapped
                         logger.info("GET swapPassResponse return redeemed, but not swapped status: " + swapPassResponse);
-                        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                        return swapBadge(ticketId, account);
                 }
-                //TODO handle attachPassResponse
                 pass = new Pass();
                 pass.setAccount(accountService.findById(account.getId()));
                 pass.setCityWeeklyTicketId(ticketId + "");

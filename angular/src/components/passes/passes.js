@@ -11,10 +11,7 @@ angular
             vm.attachPass = attachPass;
 
             (function init() {
-                PassService.get()
-                    .then(function success(data) {
-
-                    });
+                getPasses();
             })();
 
             function login(email, password) {
@@ -32,8 +29,23 @@ angular
                 return AuthenticationService();
             }
 
+            function getPasses(initalData) {
+                vm.passes = initalData;
+                return PassService.get()
+                    .then(function success(data) {
+                        vm.passes = data;
+                    });
+            }
+
             function attachPass(passBarcode) {
-                PassService.attach(passBarcode);
+                delete vm.attachPassError;
+                return PassService.attach(passBarcode)
+                    .then(function success(data) {
+                        getPasses(data);
+                    }, function failure(response) {
+                        vm.attachPassError = "Unable to attach pass. Please validate pass code from CityWeekly.com.";
+                        console.error("attachPass response", response);
+                    });
             }
         }
     });

@@ -7,10 +7,16 @@ angular
         };
 
         function get() {
-            return $http.get("/pass");
+            return $http.get("/pass")
+                .then(function success(response) {
+                    return response.data;
+                });
         }
 
         function attach(passId) {
-            return $http.post("/pass/" + passId);
+            return $http.post("/pass/" + passId)
+                .then(function success(response) {
+                    return response.data;
+                });
         }
     });

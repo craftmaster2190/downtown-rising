@@ -7,7 +7,7 @@ import org.hashids.Hashids;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 /**
@@ -28,7 +28,7 @@ public class Pass extends CommonEntity {
     private String wristbandBadgeId;
     private String ticketType;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     public Account getAccount() {
         return account;
     }

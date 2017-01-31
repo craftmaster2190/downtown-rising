@@ -1,6 +1,3 @@
-<div class="col-xs-12 rounded-block">
-    TODO: Add API for attaching passes with CityWeekly api
-</div>
 <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
     <form ng-if="!$ctrl.forgotPassword && !$ctrl.currentUser()" class="rounded-block">
         <h3>Login</h3>
@@ -36,15 +33,39 @@
             <button type="button" class="btn btn-default">Change Password</button>
         </a>
     </div>
-    <form ng-if="$ctrl.currentUser()" class="rounded-block">
+    <div ng-if="$ctrl.currentUser() && $ctrl.passes" class="rounded-block">
+        <h3>Your Passes</h3>
+        <div class="row">
+            <div class="col-xs-6"><b>City Weekly ID</b></div>
+            <div class="col-xs-6"><b>Badge ID</b></div>
+            <div class="col-xs-12" ng-repeat="pass in $ctrl.passes">
+                <div class="col-xs-6" ng-bind="pass.cityWeeklyTicketId"></div>
+                <div class="col-xs-6" ng-bind="pass.wristbandBadgeId"></div>
+            </div>
+        </div>
+    </div>
+    <form ng-if="$ctrl.currentUser()" class="rounded-block" name="$ctrl.passForm">
         <h3>Attach a pass</h3>
-        <form-input-text title="Pass Barcode" required="true" model="$ctrl.passBarcode"></form-input-text>
+        <div class="form-group">
+            <label for="passBarcode">Pass Barcode</label>
+            <input id="passBarcode" name="passBarcode" class="form-control" ng-minlength="8" required=""
+                   ng-model="$ctrl.passBarcode" ng-pattern="'[0-9]+'" ng-model-options="{'debounce': 500}">
+        </div>
+        <div ng-show="$ctrl.passForm.passBarcode.$error.minlength"
+             class="alert alert-danger" role="alert">Must be at least 8 digits.
+        </div>
+        <div ng-show="$ctrl.passForm.passBarcode.$error.pattern"
+             class="alert alert-danger" role="alert">There are invalid characters.
+        </div>
         <button type="submit" class="btn btn-default" ng-disabled="!$ctrl.passBarcode"
                 ng-click="$ctrl.attachPass($ctrl.passBarcode)">Attach
         </button>
         <button type="button" class="btn btn-default">City Weekly <i class="glyphicon glyphicon-new-window"></i>
         </button>
     </form>
+    <div ng-show="$ctrl.attachPassError"
+         class="alert alert-danger" role="alert" ng-bind="$ctrl.attachPassError">
+    </div>
     <div ng-if="!$ctrl.currentUser()" class="rounded-block">
         <h3>Purchase Tickets at City Weekly</h3>
         <br/>
