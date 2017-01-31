@@ -22,7 +22,7 @@ public class CommentController {
 
     @Autowired
     AccountService accountService;
-    
+
     @PostMapping
     public ResponseEntity<Comment> add(@RequestBody Comment comment, @AuthenticationPrincipal Account account) {
         if (comment != null) {

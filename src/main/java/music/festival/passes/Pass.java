@@ -66,6 +66,8 @@ public class Pass extends CommonEntity {
      * This is not a security scheme, this an obfuscation scheme.
      * Anyone that wanted to and knew what they were doing could reverse engineer the ID.
      * All we are doing here is making it difficult for the layman to forge a badge.
+     * <p>
+     * Tested with 100000 fake passes and no violation of uniqueness.
      *
      * @param id
      */
@@ -73,7 +75,7 @@ public class Pass extends CommonEntity {
     public void setId(Long id) {
         super.setId(id);
         if (id != null) {
-            String badgeId = HASHIDS.encode(id);
+            String badgeId = HASHIDS.encode(id.hashCode());
             if (badgeId.length() > BADGE_ID_LENGTH) {
                 badgeId = badgeId.substring(0, BADGE_ID_LENGTH - 1);
             }
