@@ -100,7 +100,7 @@
         <div class="form-group">
             <label for="genrePreferences">Musical Genre Preference</label>
             <input id="genrePreferences" type="text" ng-model="$ctrl.account.genrePreferences"
-                   uib-typeahead="genrePreferences for genrePreferences in ['Alternative', 'Rock', 'Pop', 'Grunge', 'Hip hop']"
+                   uib-typeahead="genrePreferences for genrePreferences in $ctrl.genres"
                    class="form-control"
                    typeahead-open-on-focus="">
         </div>

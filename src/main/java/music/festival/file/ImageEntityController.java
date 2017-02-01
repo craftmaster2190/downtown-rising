@@ -19,13 +19,11 @@ import java.util.List;
  */
 public abstract class ImageEntityController<T extends ImageEntity> {
 
+    protected PagingAndSortingRepository<T, Long> repository;
     @Autowired
     ServableImageRepository servableImageRepository;
-
     @Autowired
     ImageResizerService imageResizerService;
-
-    private PagingAndSortingRepository<T, Long> repository;
 
     public ImageEntityController(PagingAndSortingRepository<T, Long> repository) {
         this.repository = repository;
@@ -36,7 +34,7 @@ public abstract class ImageEntityController<T extends ImageEntity> {
                                           @RequestParam(defaultValue = "id", required = false) String sort) {
         List<T> tList = new ArrayList<>();
         PageRequest pageRequest = new PageRequest(page, 10, Sort.Direction.ASC, sort);
-        repository.findAll(pageRequest).forEach(tList::add);
+        repository.findAll().forEach(tList::add);
         if (tList.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(tList, HttpStatus.OK);

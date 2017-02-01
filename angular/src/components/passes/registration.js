@@ -2,7 +2,7 @@ angular
     .module('rising')
     .component('registration', {
         templateUrl: 'components/passes/registration.html',
-        controller: function ($scope, AuthenticationService, $state) {
+        controller: function ($scope, AuthenticationService, $state, GenreService) {
             var vm = this,
                 date21YearsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 21));
             console.log('Initializing Registration Controller...');
@@ -11,6 +11,7 @@ angular
             vm.currentUser = currentUser;
             vm.isYoung = isYoung;
             vm.save = save;
+            vm.genres = GenreService.get();
 
             (function init() {
                 AuthenticationService.get().then(function success(account) {

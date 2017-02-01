@@ -2,9 +2,10 @@ package music.festival.lineups;
 
 import music.festival.file.ImageEntity;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,17 +13,16 @@ import java.util.List;
  */
 @Entity
 public class LineUp extends ImageEntity {
-    private List<Date> dates = new ArrayList<>();
+    private List<LineUpVenueDate> venueDates = new ArrayList<>();
     private String genre;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Temporal(TemporalType.DATE)
-    public List<Date> getDates() {
-        return dates;
+    @OneToMany(cascade = CascadeType.ALL)
+    public List<LineUpVenueDate> getVenueDates() {
+        return venueDates;
     }
 
-    public void setDates(List<Date> dates) {
-        this.dates = dates;
+    public void setVenueDates(List<LineUpVenueDate> venueDates) {
+        this.venueDates = venueDates;
     }
 
     public String getGenre() {
