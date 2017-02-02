@@ -13,10 +13,12 @@
                                ng-model="$ctrl.account.cityWeeklyTicketId" ng-pattern="'[0-9]+'"
                                ng-model-options="{'debounce': 500}">
                         <span class="input-group-btn">
-                        <button type="button" class="btn btn-default">
-                            City Weekly <i class="glyphicon glyphicon-new-window"></i>
-                        </button>
-                    </span>
+                            <a href="//cityweekly.com" target="_blank">
+                                <button type="button" class="btn btn-default">
+                                    City Weekly <i class="glyphicon glyphicon-new-window"></i>
+                                </button>
+                            </a>
+                        </span>
                     </div>
                 </div>
                 <div ng-show="$ctrl.passForm.passBarcode.$error.minlength || $ctrl.passForm.passBarcode.$error.maxlength"
@@ -170,7 +172,7 @@
                     ng-click="$ctrl.reset()">
                 Register Another
             </button>
-            <a class="pull-right" href="//UtahMusicFestival.com">
+            <a class="pull-right" href="//UtahMusicFest.com">
                 <button type="button" class="btn btn-default">Back to Main Site</button>
             </a>
         </div>
