@@ -33,6 +33,10 @@ public class SwapPassRequest {
         return serialNumber;
     }
 
+    public void setSerialNumber(Long serialNumber) {
+        this.serialNumber = String.format("%08d", serialNumber);
+    }
+
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }

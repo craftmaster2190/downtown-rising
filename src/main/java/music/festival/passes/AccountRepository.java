@@ -1,4 +1,4 @@
-package music.festival.user;
+package music.festival.passes;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -11,5 +11,5 @@ import javax.transaction.Transactional;
 @Repository
 public interface AccountRepository extends PagingAndSortingRepository<Account, Long> {
     @Transactional
-    Account findByEmail(String email);
+    Account findByCityWeeklyTicketId(Long ticketId);
 }

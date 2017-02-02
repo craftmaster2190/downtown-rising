@@ -1,24 +1,31 @@
-package music.festival.user;
+package music.festival.passes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import music.festival.file.ImageEntity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import music.festival.CommonEntity;
+import org.hashids.Hashids;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by bryce_fisher on 1/4/17.
  */
 @Entity
-public class Account extends ImageEntity implements UserDetails {
+public class Account extends CommonEntity {
 
+    @Transient
+    private static final int BADGE_ID_LENGTH = 8;
+    /**
+     * Obfuscate badge ids so they are not in sequence.
+     * Just using the database record id because the database will ensure uniqueness.
+     */
+    @Transient
+    private static final Hashids HASHIDS = new Hashids("DowntownRising", BADGE_ID_LENGTH, "0123456789ABCDEF");
+    private Long cityWeeklyTicketId;
+    private String wristbandBadgeId;
+    private String ticketType;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -27,8 +34,6 @@ public class Account extends ImageEntity implements UserDetails {
     private String city;
     private String state;
     private String zip;
-    private String password;
-    private List<Role> roles = new ArrayList<>();
     private Date birthDate;
     private String gender;
     private String phone;
@@ -36,7 +41,6 @@ public class Account extends ImageEntity implements UserDetails {
     private String email;
     private String heardAbout;
     private String genrePreferences;
-    private String clientSettings;
 
     public String getFirstName() {
         return firstName;
@@ -119,51 +123,6 @@ public class Account extends ImageEntity implements UserDetails {
         this.phoneType = phoneType;
     }
 
-    @Transient
-    @JsonIgnore
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
-
-    @Transient
-    @JsonIgnore
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Transient
-    @JsonIgnore
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Transient
-    @JsonIgnore
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Transient
-    @JsonIgnore
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @ManyToMany
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
     @Temporal(TemporalType.TIMESTAMP)
     public Date getBirthDate() {
         return birthDate;
@@ -189,7 +148,6 @@ public class Account extends ImageEntity implements UserDetails {
         this.phone = phone;
     }
 
-    @Column(unique = true, nullable = false)
     public String getEmail() {
         return email;
     }
@@ -198,47 +156,12 @@ public class Account extends ImageEntity implements UserDetails {
         this.email = email;
     }
 
-    @Override
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Transient
-    @JsonIgnore
-    @Override
-    public String getUsername() {
-        return getEmail();
-    }
-
-    @Override
-    public String toString() {
-        if (getUsername() != null)
-            return getUsername();
-        return super.toString();
-    }
-
-    @Lob
     public String getHeardAbout() {
         return heardAbout;
     }
 
     public void setHeardAbout(String heardAbout) {
         this.heardAbout = heardAbout;
-    }
-
-    //Expected to be a JSON string
-    @Lob
-    public String getClientSettings() {
-        return clientSettings;
-    }
-
-    public void setClientSettings(String clientSettings) {
-        this.clientSettings = clientSettings;
     }
 
     public String getGenrePreferences() {
@@ -248,4 +171,58 @@ public class Account extends ImageEntity implements UserDetails {
     public void setGenrePreferences(String genrePreferences) {
         this.genrePreferences = genrePreferences;
     }
+
+    @Column(unique = true)
+    public Long getCityWeeklyTicketId() {
+        return cityWeeklyTicketId;
+    }
+
+    public void setCityWeeklyTicketId(Long cityWeeklyTicketId) {
+        this.cityWeeklyTicketId = cityWeeklyTicketId;
+    }
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(unique = true)
+    public String getWristbandBadgeId() {
+        return wristbandBadgeId;
+    }
+
+    public void setWristbandBadgeId(String wristbandBadgeId) {
+        this.wristbandBadgeId = wristbandBadgeId;
+    }
+
+    /**
+     * When Pass is saved, hibernate will generate a unique ID,
+     * HashIds will generate the same hashid every time for the same ID.
+     * But to people the Badge ID will be out of order and random prevent a person from
+     * generating a forged pass based on a sequence id.
+     * <p>
+     * This is not a security scheme, this an obfuscation scheme.
+     * Anyone that wanted to and knew what they were doing could reverse engineer the ID.
+     * All we are doing here is making it difficult for the layman to forge a badge.
+     * <p>
+     * Tested with 100000 fake passes and no violation of uniqueness.
+     *
+     * @param id
+     */
+    @Override
+    public void setId(Long id) {
+        super.setId(id);
+        if (id != null) {
+            String badgeId = HASHIDS.encode(id.hashCode());
+            if (badgeId.length() > BADGE_ID_LENGTH) {
+                badgeId = badgeId.substring(0, BADGE_ID_LENGTH - 1);
+            }
+            setWristbandBadgeId(badgeId);
+        }
+    }
+
+    public String getTicketType() {
+        return ticketType;
+    }
+
+    public void setTicketType(String ticketType) {
+        this.ticketType = ticketType;
+    }
+
 }

@@ -1,71 +1,121 @@
 angular
-    .module('rising')
-    .component('registration', {
-        templateUrl: 'components/passes/registration.html',
-        controller: function ($scope, AuthenticationService, $state, GenreService) {
-            var vm = this,
-                date21YearsAgo = new Date(new Date().setFullYear(new Date().getFullYear() - 21));
-            console.log('Initializing Registration Controller...');
+    .module("rising")
+    .component("registration", {
+        templateUrl: "components/passes/registration.html",
+        controller: function (RegistrationService, GenreService, $timeout, $window) {
+            var vm = this;
+            console.log("Initializing Registration Controller...");
 
             vm.register = register;
-            vm.currentUser = currentUser;
+            vm.checkPass = checkPass;
             vm.isYoung = isYoung;
-            vm.save = save;
-            vm.genres = GenreService.get();
+            vm.addGenre = addGenre;
+            vm.deleteGenre = deleteGenre;
+            vm.reset = reset;
 
             (function init() {
-                AuthenticationService.get().then(function success(account) {
-                    vm.account = account;
-                });
+                vm.genres = GenreService.get();
 
                 vm.dateOptions = {
                     maxDate: new Date()
                 };
-            })();
 
-            $scope.$watch(function watch() {
-                if (vm.account) {
-                    return vm.account.password === vm.confirmPassword;
-                }
-                return;
-            }, function update(newValue) {
-                if (newValue) {
-                    vm.confirmPasswordCheck = "match";
-                } else {
-                    vm.confirmPasswordCheck = null;
-                }
-            });
+                vm.date21YearsAgo = new Date(
+                    new Date().setFullYear(
+                        new Date().getFullYear() - 21
+                    )
+                );
+
+                $timeout(function _DEV_initValues() {
+                    vm.account = {
+                        cityWeeklyTicketId: "12341234",
+                        email: "Bryce@bryce.com",
+                        heardAbout: "CityWeekly.com",
+                        firstName: "Bryce",
+                        lastName: "Fisher",
+                        birthDate: vm.date21YearsAgo,
+                        gender: "Male",
+                        address1: "Far street",
+                        address2: "Short avenue",
+                        city: "Tall City",
+                        state: "UT",
+                        zip: "84015",
+                        phone: "801-555-4321",
+                        phoneType: "Cell"
+                    };
+                    addGenre("Punk")
+                    checkPass(vm.account.cityWeeklyTicketId);
+                }, 1000);
+
+                reset();
+            })();
 
 
             function register(account) {
-                return AuthenticationService.register(account)
+                if (!account) {
+                    return;
+                }
+                vm.isRegistering = true;
+                vm.registrationFailed = false;
+                return RegistrationService.register(account)
                     .then(function success() {
-                        $state.go("passes");
-                    }, function failure(response) {
-                        if (response.status === 406) {
-                            vm.usernameTaken = true;
-                        }
+                        vm.isRegisteredSuccess = true;
+                    }, function failure() {
+                        vm.registrationFailed = true;
+                    })
+                    .finally(function () {
+                        vm.isRegistering = false;
                     });
             }
 
-            function save(account) {
-                return AuthenticationService.save(account)
+            function checkPass(pass) {
+                vm.passTaken = false;
+                vm.passIsValid = false;
+                if (!pass) {
+                    return;
+                }
+                vm.checkingPass = true;
+                return RegistrationService.checkPass(pass)
                     .then(function success() {
-                        $state.reload();
+                        vm.passIsValid = true;
+                    }, function failure() {
+                        vm.passTaken = true;
+                    })
+                    .finally(function () {
+                        vm.checkingPass = false;
                     });
-            }
-
-            function currentUser() {
-                return AuthenticationService();
             }
 
             function isYoung() {
                 if (vm.account && vm.account.birthdate) {
-                    if (vm.account.birthdate > date21YearsAgo) {
+                    if (vm.account.birthdate > vm.date21YearsAgo) {
                         return true;
                     }
                 }
                 return false;
+            }
+
+            function addGenre(genre) {
+                if (!angular.isArray(vm.genrePreferences)) {
+                    vm.genrePreferences = [];
+                }
+                vm.genrePreferences.push(genre);
+                if (!angular.isObject(vm.account)) {
+                    vm.account = {};
+                }
+                vm.account.genrePreferences = vm.genrePreferences.join();
+            }
+
+            function deleteGenre(index) {
+                vm.genrePreferences.splice(index, 1);
+                vm.account.genrePreferences = vm.genrePreferences.join();
+            }
+
+            function reset() {
+                vm.account = {};
+                vm.isRegisteredSuccess = false;
+                vm.genrePreferences = [];
+                $window.scrollTo(0, 0);
             }
         }
     });

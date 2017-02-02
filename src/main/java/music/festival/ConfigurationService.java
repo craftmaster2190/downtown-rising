@@ -36,6 +36,8 @@ public class ConfigurationService {
 
     @Value("${music.festival.cityweekly.default.timeout:60000}")
     private int defaultTimeout;
+    @Value("${music.festival.cityweekly.hostname:#{null}}")
+    private String cityWeeklyHostname;
 
     public long timeBetweenCheckingToNag() {
         return timeBetweenCheckingToNag;
@@ -86,5 +88,11 @@ public class ConfigurationService {
 
     public int defaultTimeout() {
         return defaultTimeout;
+    }
+
+    public String cityWeeklyHostname() {
+        if (cityWeeklyHostname == null)
+            throw new NullPointerException("Expected music.festival.cityweekly.hostname in properties");
+        return cityWeeklyHostname;
     }
 }

@@ -2,12 +2,19 @@ angular
     .module('rising')
     .component('lineups', {
         templateUrl: 'components/lineups/lineups.html',
-        controller: function (LineupService, AuthenticationService) {
+        controller: function (LineupService, AuthenticationService, GenreService) {
             var vm = this;
             console.log('Initializing Lineups Controller...');
 
             vm.addLineup = addLineup;
+            vm.filter = filter;
+
             vm.AuthenticationService = AuthenticationService;
+            vm.filterDates = {};
+            vm.filterGenres = {};
+            angular.forEach(GenreService.get(), function (genre) {
+                vm.filterGenres[genre] = false;
+            });
 
             (function init() {
                 LineupService().then(function success(data) {
@@ -24,6 +31,16 @@ angular
                     vm.lineups = [];
                 }
                 vm.lineups.push({});
+            }
+
+            function filter(item) {
+                for (var genre in vm.filterGenres) {
+
+                }
+                if (item.genre) {
+
+                }
+                return true;
             }
         }
     });
