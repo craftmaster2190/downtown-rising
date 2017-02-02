@@ -1,6 +1,6 @@
 angular
     .module("rising")
-    .factory("GenreService", function (upload) {
+    .factory("GenreService", function () {
         console.log("Initializing GenreService...");
         return {
             get: get
