@@ -7,6 +7,9 @@
                 <div class="form-group">
                     <label for="passBarcode">Pass Barcode</label>
                     <div class="input-group">
+                        <span ng-if="$ctrl.passIsValid" style="color: #3c763d;" class="input-group-addon">
+                            <i class="glyphicon glyphicon-ok"></i>
+                        </span>
                         <input id="passBarcode" name="passBarcode" class="form-control" ng-minlength="8"
                                ng-maxlength="8"
                                ng-keyup="$event.keyCode == 13 && $ctrl.checkPass($ctrl.account.cityWeeklyTicketId)"
@@ -36,9 +39,6 @@
                 </div>
                 <div ng-show="$ctrl.checkingPass"
                      class="alert alert-info" role="alert">Validating pass...
-                </div>
-                <div ng-show="$ctrl.passIsValid"
-                     class="alert alert-info" role="alert">This is a valid pass that has not yet been registered.
                 </div>
             </div>
             <ng-form name="$ctrl.accountInfoForm">
@@ -126,7 +126,8 @@
                         </div>
                     </div>
                     <div ng-show="$ctrl.isYoung()"
-                         class="alert alert-info" role="alert">Most venues will serve alcohol and require participants
+                         class="alert alert-warning" role="alert">Most venues will serve alcohol and require
+                        participants
                         to be 21 and older with ID.
                     </div>
                     <div class="row">
