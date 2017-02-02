@@ -49,6 +49,10 @@ angular
 
             function checkPass(pass) {
                 vm.passTaken = false;
+                if (vm.passIsValid) {
+                    vm.passIsValid = false;
+                    return;
+                }
                 vm.passIsValid = false;
                 if (!pass) {
                     return;
@@ -94,6 +98,7 @@ angular
                 vm.account = {};
                 vm.isRegisteredSuccess = false;
                 vm.genrePreferences = [];
+                vm.isValidPass = false;
                 $window.scrollTo(0, 0);
             }
         }

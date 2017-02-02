@@ -9,15 +9,15 @@
                     <div class="input-group">
                         <input id="passBarcode" name="passBarcode" class="form-control" ng-minlength="8"
                                ng-maxlength="8"
-                               required="" ng-change="$ctrl.checkPass($ctrl.account.cityWeeklyTicketId)"
-                               ng-model="$ctrl.account.cityWeeklyTicketId" ng-pattern="'[0-9]+'"
-                               ng-model-options="{'debounce': 500}">
+                               ng-keyup="$event.keyCode == 13 && $ctrl.checkPass($ctrl.account.cityWeeklyTicketId)"
+                               required="" ng-disabled="$ctrl.passIsValid"
+                               ng-model="$ctrl.account.cityWeeklyTicketId" ng-pattern="'[0-9]+'">
                         <span class="input-group-btn">
-                            <a href="//cityweekly.com" target="_blank">
-                                <button type="button" class="btn btn-default">
-                                    City Weekly <i class="glyphicon glyphicon-new-window"></i>
-                                </button>
-                            </a>
+                            <button type="button" class="btn btn-default"
+                                    ng-disabled="$ctrl.passForm.passBarcode.$invalid"
+                                    ng-click="$ctrl.checkPass($ctrl.account.cityWeeklyTicketId)">
+                                {{$ctrl.passIsValid ? 'Change' : 'Check Pass'}}
+                            </button>
                         </span>
                     </div>
                 </div>
@@ -32,10 +32,13 @@
                 <div ng-show="$ctrl.passTaken"
                      class="alert alert-danger" role="alert">This pass is in use or invalid. If this is
                     in error or you need to update information on an existing pass, please contact us at
-                    <a href="mailto:admin@utahmusicfestival.com">admin@utahmusicfestival.com</a>
+                    <a href="mailto:admin@utahmusicfest.com">admin@utahmusicfestival.com</a>
                 </div>
                 <div ng-show="$ctrl.checkingPass"
                      class="alert alert-info" role="alert">Validating pass...
+                </div>
+                <div ng-show="$ctrl.passIsValid"
+                     class="alert alert-info" role="alert">This is a valid pass that has not yet been registered.
                 </div>
             </div>
             <ng-form name="$ctrl.accountInfoForm">
@@ -129,7 +132,7 @@
                         <form-input-text class="col-xs-12 col-sm-6" title="Address 1"
                                          model="$ctrl.account.address1" required="true"></form-input-text>
                         <form-input-text class="col-xs-12 col-sm-6" title="Address 2"
-                                         model="$ctrl.account.address2" required="true"></form-input-text>
+                                         model="$ctrl.account.address2"></form-input-text>
                         <form-input-text class="col-xs-12 col-md-4" title="City"
                                          model="$ctrl.account.city" required="true"></form-input-text>
                         <form-input-text class="col-xs-12 col-sm-6 col-md-4" title="State"
@@ -160,8 +163,8 @@
             </ng-form>
         </fieldset>
         <div class="form-group">
-            <button type="submit"
-                    ng-disabled="$ctrl.registrationForm.$invalid || $ctrl.isRegistering || $ctrl.isRegisteredSuccess"
+            <button type="submit" formnovalidate
+                    ng-disabled="$ctrl.registrationForm.$invalid || $ctrl.isRegistering || $ctrl.isRegisteredSuccess || !$ctrl.passIsValid"
                     class="btn btn-default"
                     uib-tooltip="You must fill out the required fields."
                     ng-click="$ctrl.register($ctrl.account)">
@@ -182,7 +185,7 @@
         <div ng-show="$ctrl.registrationFailed"
              class="alert alert-danger" role="alert">There was an issue processing your registration. Please try again
             later.<br/>If this problem persists, please contact us at
-            <a href="mailto:admin@utahmusicfestival.com">admin@utahmusicfestival.com</a>
+            <a href="mailto:admin@utahmusicfestival.com">admin@utahmusicfest.com</a>
         </div>
     </form>
 </div>
