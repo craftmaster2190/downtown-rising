@@ -1,9 +1,0 @@
-<div class="masonry">
-    <venue-obj model="venue" ng-repeat="venue in $ctrl.venues"></venue-obj>
-</div>
-<div>
-    <button type="button" ng-if="$ctrl.AuthenticationService.hasRole('ROLE_ADMIN')" class="btn btn-default"
-            ng-click="$ctrl.addVenue()">New
-        Venue
-    </button>
-</div>

@@ -2,10 +2,7 @@ angular
     .module("rising")
     .component("footer", {
         templateUrl: "components/footer/footer.html",
-        controller: function (ScheduleService) {
-            var vm = this;
+        controller: function () {
             console.log("Initializing Footer Controller...");
-
-            vm.ScheduleService = ScheduleService;
         }
     });

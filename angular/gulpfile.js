@@ -28,8 +28,7 @@ orders.vendorJs = ['jquery.js',
     'bootstrap.js',
     'angular.js',
     'rangy-core.js'];
-orders.appJs = ['**/RootEntity.js',
-    'index.js'];
+orders.appJs = ['index.js'];
 
 //PIPE FUNCTIONS
 function cssDist() {

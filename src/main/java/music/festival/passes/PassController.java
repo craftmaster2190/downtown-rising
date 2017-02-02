@@ -131,7 +131,7 @@ public class PassController {
 
         //Get from City Weekly
         HttpEntity<SwapPassRequest> swapPassRequest = new HttpEntity<>(headers);
-        ResponseEntity<SwapPassResponse> swapPassResponseEntity = restTemplate.exchange("/swapStatus/" + ticketId,
+        ResponseEntity<SwapPassResponse> swapPassResponseEntity = restTemplate.exchange("/swapStatus/" + String.format("%08d", ticketId),
                 HttpMethod.GET, swapPassRequest, SwapPassResponse.class);
 
         if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
