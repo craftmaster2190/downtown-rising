@@ -2,7 +2,7 @@ angular
     .module("rising")
     .component("registration", {
         templateUrl: "components/passes/registration.html",
-        controller: function (RegistrationService, GenreService, $timeout, $window) {
+        controller: function (RegistrationService, GenreService, $window) {
             var vm = this;
             console.log("Initializing Registration Controller...");
 
@@ -25,27 +25,6 @@ angular
                         new Date().getFullYear() - 21
                     )
                 );
-
-                $timeout(function _DEV_initValues() {
-                    vm.account = {
-                        cityWeeklyTicketId: "12341234",
-                        email: "Bryce@bryce.com",
-                        heardAbout: "CityWeekly.com",
-                        firstName: "Bryce",
-                        lastName: "Fisher",
-                        birthDate: vm.date21YearsAgo,
-                        gender: "Male",
-                        address1: "Far street",
-                        address2: "Short avenue",
-                        city: "Tall City",
-                        state: "UT",
-                        zip: "84015",
-                        phone: "801-555-4321",
-                        phoneType: "Cell"
-                    };
-                    addGenre("Punk")
-                    checkPass(vm.account.cityWeeklyTicketId);
-                }, 1000);
 
                 reset();
             })();
