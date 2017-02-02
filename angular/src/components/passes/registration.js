@@ -2,7 +2,7 @@ angular
     .module("rising")
     .component("registration", {
         templateUrl: "components/passes/registration.html",
-        controller: function (RegistrationService, GenreService, $window) {
+        controller: function (RegistrationService, GenreService, $window, $state) {
             var vm = this;
             console.log("Initializing Registration Controller...");
 
@@ -25,8 +25,6 @@ angular
                         new Date().getFullYear() - 21
                     )
                 );
-
-                reset();
             })();
 
 
@@ -70,8 +68,8 @@ angular
             }
 
             function isYoung() {
-                if (vm.account && vm.account.birthdate) {
-                    if (vm.account.birthdate > vm.date21YearsAgo) {
+                if (vm.account && vm.account.birthDate) {
+                    if (vm.account.birthDate > vm.date21YearsAgo) {
                         return true;
                     }
                 }
@@ -95,11 +93,8 @@ angular
             }
 
             function reset() {
-                vm.account = {};
-                vm.isRegisteredSuccess = false;
-                vm.genrePreferences = [];
-                vm.isValidPass = false;
                 $window.scrollTo(0, 0);
+                $state.reload();
             }
         }
     });

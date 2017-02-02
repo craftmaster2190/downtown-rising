@@ -81,7 +81,8 @@
                             <span class="input-group-addon"><i class="glyphicon glyphicon-list-alt"></i></span>
                         </div>
 
-                        <button class="btn btn-primary genre-button" ng-repeat="genre in $ctrl.genrePreferences"
+                        <button type="button" class="btn btn-primary genre-button"
+                                ng-repeat="genre in $ctrl.genrePreferences"
                                 ng-click="$ctrl.deleteGenre($index)">{{::genre}} <i
                                 class="glyphicon glyphicon-remove"></i></button>
 

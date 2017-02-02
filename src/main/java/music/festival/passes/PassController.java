@@ -121,7 +121,7 @@ public class PassController {
     }
 
     @GetMapping("/{ticketId}")
-    public ResponseEntity<Account> swapStatus(@PathVariable Long ticketId) {
+    public ResponseEntity<?> swapStatus(@PathVariable Long ticketId) {
         //Require ticketId to be a long so that Spring will sanitize the input for us.
         Account existingAccount = accountRepository.findByCityWeeklyTicketId(ticketId);
         Account account = new Account();
@@ -140,17 +140,17 @@ public class PassController {
                 case -1:
                 case 0:
                     logger.info("GET swapPassResponse return failure status: " + swapPassResponse);
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(swapPassResponse.getMessage(), HttpStatus.BAD_REQUEST);
                 case 1:
                     //Go down to after switch statement and continue from there
                     break;
                 case 2:
                     logger.info("GET swapPassResponse return already swapped status: " + swapPassResponse);
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(swapPassResponse.getMessage(), HttpStatus.BAD_REQUEST);
                 case 3:
                 default:
                     logger.info("GET swapPassResponse return redeemed, but not swapped status: " + swapPassResponse);
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>(swapPassResponse.getMessage(), HttpStatus.BAD_REQUEST);
             }
             logger.info("GET swapPassResponse: " + swapPassResponse);
             account.setCityWeeklyTicketId(ticketId);
