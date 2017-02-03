@@ -8,10 +8,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 @SpringBootApplication
 public class DowntownApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
-        if (args != null)
-            for (String arg : args)
-                if (arg.contains("spring.profiles.active") && arg.contains("dev"))
-                    DEV_MODE_DisableSSLVerification.disable();
+        DEV_MODE_DisableSSLVerification.disable();
         SpringApplication.run(DowntownApplication.class, args);
     }
 

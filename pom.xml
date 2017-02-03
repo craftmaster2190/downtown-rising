@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>music.festival</groupId>
   <artifactId>downtown</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
   <packaging>${packaging.type}</packaging>
   <name>downtown</name>
   <description>Downtown Rising</description>

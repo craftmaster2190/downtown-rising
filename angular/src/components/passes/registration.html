@@ -35,7 +35,7 @@
                 <div ng-show="$ctrl.passTaken"
                      class="alert alert-danger" role="alert">This pass is in use or invalid. If this is
                     in error or you need to update information on an existing pass, please contact us at
-                    <a href="mailto:admin@utahmusicfest.com">admin@utahmusicfestival.com</a>
+                    <a href="mailto:admin@utahmusicfest.com">admin@utahmusicfest.com</a>
                 </div>
                 <div ng-show="$ctrl.checkingPass"
                      class="alert alert-info" role="alert">Validating pass...
@@ -164,7 +164,7 @@
                 </fieldset>
             </ng-form>
         </fieldset>
-        <div class="form-group">
+        <div class="form-group text-right">
             <button type="submit" formnovalidate
                     ng-disabled="$ctrl.registrationForm.$invalid || $ctrl.isRegistering || $ctrl.isRegisteredSuccess || !$ctrl.passIsValid"
                     class="btn btn-default"
@@ -177,9 +177,6 @@
                     ng-click="$ctrl.reset()">
                 Register Another
             </button>
-            <a class="pull-right" href="//UtahMusicFest.com">
-                <button type="button" class="btn btn-default">Back to Main Site</button>
-            </a>
         </div>
         <div ng-show="$ctrl.isRegisteredSuccess"
              class="alert alert-info" role="alert">Congratulations, your pass is now registered.
@@ -187,7 +184,7 @@
         <div ng-show="$ctrl.registrationFailed"
              class="alert alert-danger" role="alert">There was an issue processing your registration. Please try again
             later.<br/>If this problem persists, please contact us at
-            <a href="mailto:admin@utahmusicfestival.com">admin@utahmusicfest.com</a>
+            <a href="mailto:admin@utahmusicfest.com">admin@utahmusicfest.com</a>
         </div>
     </form>
 </div>
