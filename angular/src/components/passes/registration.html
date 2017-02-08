@@ -71,7 +71,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Musical Genre Preference</label>
+                        <label for="genrePreferences">Musical Genre Preference</label>
                         <div class="input-group">
                             <input id="genrePreferences" type="text" ng-model="genreText"
                                    uib-typeahead="genrePreference for genrePreference in $ctrl.genres"
@@ -86,7 +86,8 @@
                                 ng-click="$ctrl.deleteGenre($index)">{{::genre}} <i
                                 class="glyphicon glyphicon-remove"></i></button>
 
-                        <input ng-model="$ctrl.account.genrePreferences" required="" style="display: none;">
+                        <input ng-model="$ctrl.account.genrePreferences" required="" style="display: none;"
+                               title="hiddenGenrePreferences">
                     </div>
                     <div class="row">
                         <form-input-text class="col-xs-12 col-md-4" title="First Name"
@@ -98,9 +99,9 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
-                            <label>Birthdate</label>
+                            <label for="birthdate">Birthdate</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" uib-datepicker-popup="longDate"
+                                <input id="birthdate" type="text" class="form-control" uib-datepicker-popup="longDate"
                                        ng-model="$ctrl.account.birthDate" required=""
                                        close-text="Close" is-open="datepopup.opened" date-options="$ctrl.dateOptions"
                                        alt-input-formats="['yyyy-MM-dd']"/>
@@ -154,7 +155,7 @@
                                            uib-typeahead="deliveryPreference for deliveryPreference in ['Mail', 'Pickup']"
                                            class="form-control" typeahead-select-on-blur="true"
                                            typeahead-editable="false"
-                                           typeahead-open-on-focus="">
+                                           typeahead-open-on-focus="" required>
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-list-alt"></i></span>
                                 </div>
                             </div>
