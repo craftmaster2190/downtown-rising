@@ -2,7 +2,7 @@ angular
     .module("rising")
     .component("registration", {
         templateUrl: "components/passes/registration.html",
-        controller: function (RegistrationService, GenreService, $window, $state) {
+        controller: function (RegistrationService, GenreService, $window, $state, $uibModal) {
             var vm = this;
             console.log("Initializing Registration Controller...");
 
@@ -34,6 +34,21 @@ angular
                 }
                 vm.isRegistering = true;
                 vm.registrationFailed = false;
+
+                return $uibModal.open({
+                    bindToController: true,
+                    controllerAs: "$modalCtrl",
+                    controller: function () {
+                    },
+                    templateUrl: "components/passes/confirm-modal.html"
+                }).result.then(function onOkClicked() {
+                    return _doRegister(account);
+                }, function onDismissed() {
+                    vm.isRegistering = false;
+                });
+            }
+
+            function _doRegister(account) {
                 return RegistrationService.register(account)
                     .then(function success() {
                         vm.isRegisteredSuccess = true;
