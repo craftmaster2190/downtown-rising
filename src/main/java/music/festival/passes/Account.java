@@ -41,6 +41,15 @@ public class Account extends CommonEntity {
     private String email;
     private String heardAbout;
     private String genrePreferences;
+    private String deliveryPreference;
+
+    public String getDeliveryPreference() {
+        return deliveryPreference;
+    }
+
+    public void setDeliveryPreference(String deliveryPreference) {
+        this.deliveryPreference = deliveryPreference;
+    }
 
     public String getFirstName() {
         return firstName;

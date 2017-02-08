@@ -33,8 +33,10 @@ div.loading-mask {
 }
 
 body {
-  background-image: url("images/background.jpg");
+  background-image: url("images/background.png");
   background-color: #000;
+  background-position: center top;
+  background-size: 100% auto;
   font-family: 'archivo_blackregular';
   .container {
     /* start 'enter' transition on main view */
