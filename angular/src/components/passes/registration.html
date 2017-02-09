@@ -14,7 +14,8 @@
                                ng-maxlength="8"
                                ng-keyup="$event.keyCode == 13 && $ctrl.checkPass($ctrl.account.cityWeeklyTicketId)"
                                required="" ng-disabled="$ctrl.passIsValid"
-                               ng-model="$ctrl.account.cityWeeklyTicketId" ng-pattern="'[0-9]+'">
+                               ng-model="$ctrl.account.cityWeeklyTicketId" ng-pattern="'[0-9]+'"
+                               ng-model-options="{ allowInvalid: true }">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default"
                                     ng-disabled="$ctrl.passForm.passBarcode.$invalid"

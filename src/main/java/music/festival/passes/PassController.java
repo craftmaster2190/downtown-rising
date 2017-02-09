@@ -9,6 +9,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -110,6 +111,9 @@ public class PassController {
                 logger.info("POST swapPassResponse: " + swapPassResponse);
                 account.setTicketType(swapPassResponse.getTicketType());
                 account = accountRepository.save(account);
+                if (!StringUtils.hasText(account.getWristbandBadgeId())) {
+                    account = accountRepository.save(account);
+                }
                 return new ResponseEntity<>(account, HttpStatus.ACCEPTED);
             } else {
                 logger.info("POST swapPassResponse return success == 0 (failed): " + swapPassResponse);
@@ -157,6 +161,9 @@ public class PassController {
             account.setWristbandBadgeId(swapPassResponse.getBadgeNumber());
             account.setTicketType(swapPassResponse.getTicketType());
             account = accountRepository.save(account);
+            if (!StringUtils.hasText(account.getWristbandBadgeId())) {
+                account = accountRepository.save(account);
+            }
         } else {
             logger.info("GET swapPassResponse failed: " + swapPassResponseEntity);
         }

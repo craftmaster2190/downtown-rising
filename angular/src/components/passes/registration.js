@@ -2,7 +2,7 @@ angular
     .module("rising")
     .component("registration", {
         templateUrl: "components/passes/registration.html",
-        controller: function (RegistrationService, GenreService, $window, $state, $uibModal) {
+        controller: function ($scope, RegistrationService, GenreService, $window, $state, $uibModal) {
             var vm = this;
             console.log("Initializing Registration Controller...");
 
@@ -25,6 +25,20 @@ angular
                         new Date().getFullYear() - 21
                     )
                 );
+
+                $scope.$watch(function watchCityWeeklyTicketId() {
+                    if (vm.account) {
+                        return vm.account.cityWeeklyTicketId;
+                    }
+                }, function update(newValue, oldValue) {
+                    if (newValue === oldValue) {
+                        return;
+                    }
+                    if (vm.account && vm.account.cityWeeklyTicketId) {
+                        vm.account.cityWeeklyTicketId =
+                            vm.account.cityWeeklyTicketId.replace(/\s+/g, "");
+                    }
+                });
             })();
 
 

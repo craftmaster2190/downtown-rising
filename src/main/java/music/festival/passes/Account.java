@@ -191,7 +191,6 @@ public class Account extends CommonEntity {
     }
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Column(unique = true)
     public String getWristbandBadgeId() {
         return wristbandBadgeId;
     }

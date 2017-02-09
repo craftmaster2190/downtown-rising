@@ -16,3 +16,5 @@ mvn clean install package && cf target -s development && cf push downtown -p $(l
  
 mvn clean install package && cf target -s production && cf push downtown -p $(ls -t target/downtown*.jar | head -1)
 
+cf target -s production && cf logs downtown --recent 
+
