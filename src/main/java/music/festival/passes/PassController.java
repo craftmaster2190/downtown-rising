@@ -102,6 +102,7 @@ public class PassController {
 
         //Get from City Weekly
         HttpEntity<SwapPassRequest> swapPassRequest = new HttpEntity<>(buildSwapPassRequest(account), headers);
+        logger.info("POST swapPassRequest: " + swapPassRequest.getBody());
         ResponseEntity<SwapPassResponse> swapPassResponseEntity = restTemplate.exchange("/doSwap/",
                 HttpMethod.POST, swapPassRequest, SwapPassResponse.class);
 
@@ -135,6 +136,7 @@ public class PassController {
 
         //Get from City Weekly
         HttpEntity<SwapPassRequest> swapPassRequest = new HttpEntity<>(headers);
+        logger.info("GET swapPassRequest: " + String.format("%08d", ticketId));
         ResponseEntity<SwapPassResponse> swapPassResponseEntity = restTemplate.exchange("/swapStatus/" + String.format("%08d", ticketId),
                 HttpMethod.GET, swapPassRequest, SwapPassResponse.class);
 
