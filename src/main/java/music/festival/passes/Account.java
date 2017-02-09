@@ -186,21 +186,7 @@ public class Account extends CommonEntity {
         return cityWeeklyTicketId;
     }
 
-    public void setCityWeeklyTicketId(Long cityWeeklyTicketId) {
-        this.cityWeeklyTicketId = cityWeeklyTicketId;
-    }
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public String getWristbandBadgeId() {
-        return wristbandBadgeId;
-    }
-
-    public void setWristbandBadgeId(String wristbandBadgeId) {
-        this.wristbandBadgeId = wristbandBadgeId;
-    }
-
     /**
-     * When Pass is saved, hibernate will generate a unique ID,
      * HashIds will generate the same hashid every time for the same ID.
      * But to people the Badge ID will be out of order and random prevent a person from
      * generating a forged pass based on a sequence id.
@@ -211,18 +197,26 @@ public class Account extends CommonEntity {
      * <p>
      * Tested with 100000 fake passes and no violation of uniqueness.
      *
-     * @param id
+     * @param cityWeeklyTicketId
      */
-    @Override
-    public void setId(Long id) {
-        super.setId(id);
-        if (id != null) {
-            String badgeId = HASHIDS.encode(id.hashCode());
+    public void setCityWeeklyTicketId(Long cityWeeklyTicketId) {
+        this.cityWeeklyTicketId = cityWeeklyTicketId;
+        if (cityWeeklyTicketId != null) {
+            String badgeId = HASHIDS.encode(cityWeeklyTicketId);
             if (badgeId.length() > BADGE_ID_LENGTH) {
                 badgeId = badgeId.substring(0, BADGE_ID_LENGTH - 1);
             }
             setWristbandBadgeId(badgeId);
         }
+    }
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public String getWristbandBadgeId() {
+        return wristbandBadgeId;
+    }
+
+    public void setWristbandBadgeId(String wristbandBadgeId) {
+        this.wristbandBadgeId = wristbandBadgeId;
     }
 
     public String getTicketType() {
