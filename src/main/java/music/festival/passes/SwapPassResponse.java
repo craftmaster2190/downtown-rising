@@ -2,6 +2,7 @@ package music.festival.passes;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -9,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Created by bryce_fisher on 1/26/17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(Include.NON_EMPTY)
 public class SwapPassResponse {
     private Integer status;
     private Integer success;
@@ -21,7 +22,7 @@ public class SwapPassResponse {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(final Integer status) {
         this.status = status;
     }
 
@@ -29,7 +30,7 @@ public class SwapPassResponse {
         return success;
     }
 
-    public void setSuccess(Integer success) {
+    public void setSuccess(final Integer success) {
         this.success = success;
     }
 
@@ -37,7 +38,7 @@ public class SwapPassResponse {
         return ticketType;
     }
 
-    public void setTicketType(String ticketType) {
+    public void setTicketType(final String ticketType) {
         this.ticketType = ticketType;
     }
 
@@ -45,7 +46,7 @@ public class SwapPassResponse {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 
@@ -53,7 +54,7 @@ public class SwapPassResponse {
         return badgeNumber;
     }
 
-    public void setBadgeNumber(String badgeNumber) {
+    public void setBadgeNumber(final String badgeNumber) {
         this.badgeNumber = badgeNumber;
     }
 
@@ -61,7 +62,7 @@ public class SwapPassResponse {
     public String toString() {
         try {
             return new ObjectMapper().writeValueAsString(this);
-        } catch (JsonProcessingException e) {
+        } catch (final JsonProcessingException e) {
             return super.toString();
         }
     }

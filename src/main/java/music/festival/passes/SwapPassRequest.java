@@ -2,6 +2,7 @@ package music.festival.passes;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -9,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Created by bryce_fisher on 1/26/17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(Include.NON_EMPTY)
 public class SwapPassRequest {
     private String serialNumber;
     private String badgeNumber;
@@ -28,24 +29,33 @@ public class SwapPassRequest {
     private String gender;
     private String referredBy;
     private String musicPreferences;
+    private String delivery;
+
+    public String getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(final String delivery) {
+        this.delivery = delivery;
+    }
 
     public String getSerialNumber() {
         return serialNumber;
     }
 
-    public void setSerialNumber(Long serialNumber) {
-        this.serialNumber = String.format("%08d", serialNumber);
+    public void setSerialNumber(final String serialNumber) {
+        this.serialNumber = serialNumber;
     }
 
-    public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
+    public void setSerialNumber(final Long serialNumber) {
+        this.serialNumber = String.format("%08d", serialNumber);
     }
 
     public String getBadgeNumber() {
         return badgeNumber;
     }
 
-    public void setBadgeNumber(String badgeNumber) {
+    public void setBadgeNumber(final String badgeNumber) {
         this.badgeNumber = badgeNumber;
     }
 
@@ -53,7 +63,7 @@ public class SwapPassRequest {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
@@ -61,7 +71,7 @@ public class SwapPassRequest {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName(final String firstName) {
         this.firstName = firstName;
     }
 
@@ -69,7 +79,7 @@ public class SwapPassRequest {
         return middleInitial;
     }
 
-    public void setMiddleInitial(String middleInitial) {
+    public void setMiddleInitial(final String middleInitial) {
         this.middleInitial = middleInitial;
     }
 
@@ -77,7 +87,7 @@ public class SwapPassRequest {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName(final String lastName) {
         this.lastName = lastName;
     }
 
@@ -85,7 +95,7 @@ public class SwapPassRequest {
         return address1;
     }
 
-    public void setAddress1(String address1) {
+    public void setAddress1(final String address1) {
         this.address1 = address1;
     }
 
@@ -93,7 +103,7 @@ public class SwapPassRequest {
         return address2;
     }
 
-    public void setAddress2(String address2) {
+    public void setAddress2(final String address2) {
         this.address2 = address2;
     }
 
@@ -101,7 +111,7 @@ public class SwapPassRequest {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(final String city) {
         this.city = city;
     }
 
@@ -109,7 +119,7 @@ public class SwapPassRequest {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(final String state) {
         this.state = state;
     }
 
@@ -117,7 +127,7 @@ public class SwapPassRequest {
         return zip;
     }
 
-    public void setZip(String zip) {
+    public void setZip(final String zip) {
         this.zip = zip;
     }
 
@@ -125,7 +135,7 @@ public class SwapPassRequest {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(final String phone) {
         this.phone = phone;
     }
 
@@ -133,7 +143,7 @@ public class SwapPassRequest {
         return phoneType;
     }
 
-    public void setPhoneType(String phoneType) {
+    public void setPhoneType(final String phoneType) {
         this.phoneType = phoneType;
     }
 
@@ -141,7 +151,7 @@ public class SwapPassRequest {
         return birthDate;
     }
 
-    public void setBirthDate(String birthDate) {
+    public void setBirthDate(final String birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -149,7 +159,7 @@ public class SwapPassRequest {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(final String gender) {
         this.gender = gender;
     }
 
@@ -157,7 +167,7 @@ public class SwapPassRequest {
         return referredBy;
     }
 
-    public void setReferredBy(String referredBy) {
+    public void setReferredBy(final String referredBy) {
         this.referredBy = referredBy;
     }
 
@@ -165,7 +175,7 @@ public class SwapPassRequest {
         return musicPreferences;
     }
 
-    public void setMusicPreferences(String musicPreferences) {
+    public void setMusicPreferences(final String musicPreferences) {
         this.musicPreferences = musicPreferences;
     }
 
@@ -173,7 +183,7 @@ public class SwapPassRequest {
     public String toString() {
         try {
             return new ObjectMapper().writeValueAsString(this);
-        } catch (JsonProcessingException e) {
+        } catch (final JsonProcessingException e) {
             return super.toString();
         }
     }

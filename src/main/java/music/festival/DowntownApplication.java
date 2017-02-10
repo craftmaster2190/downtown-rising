@@ -7,13 +7,13 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 @SpringBootApplication
 public class DowntownApplication extends SpringBootServletInitializer {
-    public static void main(String[] args) {
+    public static void main(final String... args) {
         DEV_MODE_DisableSSLVerification.disable();
         SpringApplication.run(DowntownApplication.class, args);
     }
 
     @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+    protected SpringApplicationBuilder configure(final SpringApplicationBuilder builder) {
         return builder.sources(DowntownApplication.class);
     }
 }

@@ -3,52 +3,57 @@ package music.festival;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.net.ssl.*;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
 /**
  * Created by bryce_fisher on 1/27/17.
  */
-public class DEV_MODE_DisableSSLVerification {
-    private static final Logger logger = LoggerFactory.getLogger(DEV_MODE_DisableSSLVerification.class);
+enum DEV_MODE_DisableSSLVerification {
+    ;
+    private static final Logger logger =
+            LoggerFactory.getLogger(DEV_MODE_DisableSSLVerification.class);
 
-    public static void disable() {
+    static void disable() {
         try {
             // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[]{
-                    new X509TrustManager() {
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return null;
-                        }
-
-                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                        }
-
-                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                        }
-                    }
+            final TrustManager[] trustAllCerts = {
+                    new NaiveX509TrustManager()
             };
 
             // Install the all-trusting certificate manager
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            final SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
             logger.info("Trusting all SSL Certificates");
 
             // Create all-trusting host name verifier
-            HostnameVerifier allHostsValid = new HostnameVerifier() {
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            };
+            final HostnameVerifier allHostsValid = (hostname, session) -> true;
 
             // Install the all-trusting host verifier
             HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
             logger.info("Trusting all SSL Hosts");
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static class NaiveX509TrustManager implements X509TrustManager {
+        public X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+
+        public void checkClientTrusted(final X509Certificate[] x509Certificates, final String authType) {
+        }
+
+        public void checkServerTrusted(final X509Certificate[] x509Certificates, final String authType) {
         }
     }
 }

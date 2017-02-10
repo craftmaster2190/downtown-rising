@@ -6,7 +6,11 @@ import music.festival.CommonEntity;
 import org.hashids.Hashids;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -47,7 +51,7 @@ public class Account extends CommonEntity {
         return deliveryPreference;
     }
 
-    public void setDeliveryPreference(String deliveryPreference) {
+    public void setDeliveryPreference(final String deliveryPreference) {
         this.deliveryPreference = deliveryPreference;
     }
 
@@ -55,7 +59,7 @@ public class Account extends CommonEntity {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName(final String firstName) {
         this.firstName = firstName;
     }
 
@@ -72,7 +76,7 @@ public class Account extends CommonEntity {
         return middleName;
     }
 
-    public void setMiddleName(String middleName) {
+    public void setMiddleName(final String middleName) {
         this.middleName = middleName;
     }
 
@@ -80,7 +84,7 @@ public class Account extends CommonEntity {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName(final String lastName) {
         this.lastName = lastName;
     }
 
@@ -88,7 +92,7 @@ public class Account extends CommonEntity {
         return address1;
     }
 
-    public void setAddress1(String address1) {
+    public void setAddress1(final String address1) {
         this.address1 = address1;
     }
 
@@ -96,7 +100,7 @@ public class Account extends CommonEntity {
         return address2;
     }
 
-    public void setAddress2(String address2) {
+    public void setAddress2(final String address2) {
         this.address2 = address2;
     }
 
@@ -104,7 +108,7 @@ public class Account extends CommonEntity {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(final String city) {
         this.city = city;
     }
 
@@ -112,7 +116,7 @@ public class Account extends CommonEntity {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(final String state) {
         this.state = state;
     }
 
@@ -120,7 +124,7 @@ public class Account extends CommonEntity {
         return zip;
     }
 
-    public void setZip(String zip) {
+    public void setZip(final String zip) {
         this.zip = zip;
     }
 
@@ -128,7 +132,7 @@ public class Account extends CommonEntity {
         return phoneType;
     }
 
-    public void setPhoneType(String phoneType) {
+    public void setPhoneType(final String phoneType) {
         this.phoneType = phoneType;
     }
 
@@ -137,7 +141,7 @@ public class Account extends CommonEntity {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(final Date birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -145,7 +149,7 @@ public class Account extends CommonEntity {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(final String gender) {
         this.gender = gender;
     }
 
@@ -153,7 +157,7 @@ public class Account extends CommonEntity {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(final String phone) {
         this.phone = phone;
     }
 
@@ -161,7 +165,7 @@ public class Account extends CommonEntity {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 
@@ -169,7 +173,7 @@ public class Account extends CommonEntity {
         return heardAbout;
     }
 
-    public void setHeardAbout(String heardAbout) {
+    public void setHeardAbout(final String heardAbout) {
         this.heardAbout = heardAbout;
     }
 
@@ -177,13 +181,18 @@ public class Account extends CommonEntity {
         return genrePreferences;
     }
 
-    public void setGenrePreferences(String genrePreferences) {
+    public void setGenrePreferences(final String genrePreferences) {
         this.genrePreferences = genrePreferences;
     }
 
     @Column(unique = true)
     public Long getCityWeeklyTicketId() {
         return cityWeeklyTicketId;
+    }
+
+    public void setCityWeeklyTicketId(final Long cityWeeklyTicketId) {
+        this.cityWeeklyTicketId = cityWeeklyTicketId;
+        refreshBadgeId();
     }
 
     /**
@@ -196,11 +205,8 @@ public class Account extends CommonEntity {
      * All we are doing here is making it difficult for the layman to forge a badge.
      * <p>
      * Tested with 100000 fake passes and no violation of uniqueness.
-     *
-     * @param cityWeeklyTicketId
      */
-    public void setCityWeeklyTicketId(Long cityWeeklyTicketId) {
-        this.cityWeeklyTicketId = cityWeeklyTicketId;
+    private void refreshBadgeId() {
         if (cityWeeklyTicketId != null) {
             String badgeId = HASHIDS.encode(cityWeeklyTicketId);
             if (badgeId.length() > BADGE_ID_LENGTH) {
@@ -215,15 +221,24 @@ public class Account extends CommonEntity {
         return wristbandBadgeId;
     }
 
-    public void setWristbandBadgeId(String wristbandBadgeId) {
+    public void setWristbandBadgeId(final String wristbandBadgeId) {
         this.wristbandBadgeId = wristbandBadgeId;
+        if (wristbandBadgeId == null) {
+            refreshBadgeId();
+        }
+    }
+
+    @Override
+    public void setId(final Long id) {
+        super.setId(id);
+        refreshBadgeId();
     }
 
     public String getTicketType() {
         return ticketType;
     }
 
-    public void setTicketType(String ticketType) {
+    public void setTicketType(final String ticketType) {
         this.ticketType = ticketType;
     }
 

@@ -6,16 +6,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by bryce_fisher on 1/13/17.
@@ -24,19 +36,17 @@ import java.util.List;
 @RequestMapping("/pass")
 public class PassController {
     private static final Logger logger = LoggerFactory.getLogger(PassController.class);
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT
+            = new SimpleDateFormat("yyyy-MM-dd");
     @Autowired
-    AccountRepository accountRepository;
-
+    private AccountRepository accountRepository;
     @Autowired
-    ConfigurationService configurationService;
+    private ConfigurationService configurationService;
     private RestTemplate restTemplate;
     private HttpHeaders headers;
 
-
-    private String cityWeeklyUri;
-
-    private static SwapPassRequest buildSwapPassRequest(Account account) {
-        SwapPassRequest swapPassRequest = new SwapPassRequest();
+    private static synchronized SwapPassRequest buildSwapPassRequest(final Account account) {
+        final SwapPassRequest swapPassRequest = new SwapPassRequest();
         swapPassRequest.setSerialNumber(account.getCityWeeklyTicketId());
         swapPassRequest.setBadgeNumber(account.getWristbandBadgeId());
         swapPassRequest.setFirstName(account.getFirstName());
@@ -50,6 +60,11 @@ public class PassController {
         swapPassRequest.setEmail(account.getEmail());
         swapPassRequest.setPhone(account.getPhone());
         swapPassRequest.setPhoneType(account.getPhoneType());
+        swapPassRequest.setDelivery(account.getDeliveryPreference());
+        swapPassRequest.setBirthDate(SIMPLE_DATE_FORMAT.format(account.getBirthDate()));
+        swapPassRequest.setGender(account.getGender());
+        swapPassRequest.setReferredBy(account.getHeardAbout());
+        swapPassRequest.setMusicPreferences(account.getGenrePreferences());
         logger.info("buildSwapPassRequest: " + swapPassRequest);
         return swapPassRequest;
     }
@@ -57,25 +72,26 @@ public class PassController {
     @PostConstruct
     private void configureBasicAuth() {
         //Build URI
-        cityWeeklyUri = "https://" + configurationService.cityWeeklyHostname() + "/api/merchant/badge/";
+        final String cityWeeklyUri = "https://" + configurationService.cityWeeklyHostname() + "/api/merchant/badge/";
 
         // Build rest template
-        RestTemplateBuilder restTemplateBuilder =
-                new RestTemplateBuilder().rootUri(cityWeeklyUri);
-        restTemplateBuilder.setConnectTimeout(configurationService.defaultTimeout());
-        restTemplateBuilder.setReadTimeout(configurationService.defaultTimeout());
-        restTemplate = restTemplateBuilder.build();
+        final AtomicReference<RestTemplateBuilder> restTemplateBuilder =
+                new AtomicReference<>(new RestTemplateBuilder().rootUri(cityWeeklyUri)
+                        .setConnectTimeout(configurationService.defaultTimeout())
+                        .setReadTimeout(configurationService.defaultTimeout()));
+        restTemplate = restTemplateBuilder.get().build();
+
 
         // Allow server to send text/html and treat it like JSON
-        List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
-        for (HttpMessageConverter<?> converter : converters) {
+        final List<HttpMessageConverter<?>> converters = restTemplate.getMessageConverters();
+        for (final HttpMessageConverter<?> converter : converters) {
             if (converter instanceof MappingJackson2HttpMessageConverter) {
                 try {
                     List<MediaType> supportedMediaTypes = converter.getSupportedMediaTypes();
                     supportedMediaTypes = new ArrayList<>(supportedMediaTypes);
                     supportedMediaTypes.add(MediaType.TEXT_HTML);
                     ((MappingJackson2HttpMessageConverter) converter).setSupportedMediaTypes(supportedMediaTypes);
-                } catch (Exception e) {
+                } catch (final RuntimeException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -84,30 +100,30 @@ public class PassController {
         // Build headers
         headers = new HttpHeaders();
         if (configurationService.isBasicAuthSet()) {
-            String rawBasicAuthenticationString = configurationService.cityWeeklyBasicAuthUsername() + ':' +
+            final String rawBasicAuthenticationString = configurationService.cityWeeklyBasicAuthUsername() + ':' +
                     configurationService.cityWeeklyBasicAuthPassword();
-            byte[] base64AuthenticationBytes = Base64.encodeBase64(rawBasicAuthenticationString.getBytes());
+            final byte[] base64AuthenticationBytes = Base64.encodeBase64(rawBasicAuthenticationString.getBytes());
             headers.add(HttpHeaders.AUTHORIZATION, "Basic " + new String(base64AuthenticationBytes));
         }
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<Account> swapBadge(@RequestBody Account account) {
-        Account existingAccount = accountRepository.findByCityWeeklyTicketId(account.getCityWeeklyTicketId());
+        final Account existingAccount = accountRepository.findByCityWeeklyTicketId(account.getCityWeeklyTicketId());
         if (existingAccount != null) {
             account.setId(existingAccount.getId());
         }
 
         //Get from City Weekly
-        HttpEntity<SwapPassRequest> swapPassRequest = new HttpEntity<>(buildSwapPassRequest(account), headers);
+        final HttpEntity<SwapPassRequest> swapPassRequest = new HttpEntity<>(buildSwapPassRequest(account), headers);
         logger.info("POST swapPassRequest: " + swapPassRequest.getBody());
-        ResponseEntity<SwapPassResponse> swapPassResponseEntity = restTemplate.exchange("/doSwap/",
+        final ResponseEntity<SwapPassResponse> swapPassResponseEntity = restTemplate.exchange("/doSwap/",
                 HttpMethod.POST, swapPassRequest, SwapPassResponse.class);
 
         if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
-            SwapPassResponse swapPassResponse = swapPassResponseEntity.getBody();
+            final SwapPassResponse swapPassResponse = swapPassResponseEntity.getBody();
             if (swapPassResponse.getSuccess() == 1) {
                 logger.info("POST swapPassResponse: " + swapPassResponse);
                 account.setTicketType(swapPassResponse.getTicketType());
@@ -126,22 +142,22 @@ public class PassController {
     }
 
     @GetMapping("/{ticketId}")
-    public ResponseEntity<?> swapStatus(@PathVariable Long ticketId) {
+    public ResponseEntity<?> swapStatus(@PathVariable final Long ticketId) {
         //Require ticketId to be a long so that Spring will sanitize the input for us.
-        Account existingAccount = accountRepository.findByCityWeeklyTicketId(ticketId);
+        final Account existingAccount = accountRepository.findByCityWeeklyTicketId(ticketId);
         Account account = new Account();
         if (existingAccount != null) {
             account.setId(existingAccount.getId());
         }
 
         //Get from City Weekly
-        HttpEntity<SwapPassRequest> swapPassRequest = new HttpEntity<>(headers);
+        final HttpEntity<SwapPassRequest> swapPassRequest = new HttpEntity<>(headers);
         logger.info("GET swapPassRequest: " + String.format("%08d", ticketId));
-        ResponseEntity<SwapPassResponse> swapPassResponseEntity = restTemplate.exchange("/swapStatus/" + String.format("%08d", ticketId),
+        final ResponseEntity<SwapPassResponse> swapPassResponseEntity = restTemplate.exchange("/swapStatus/" + String.format("%08d", ticketId),
                 HttpMethod.GET, swapPassRequest, SwapPassResponse.class);
 
         if (swapPassResponseEntity.getStatusCode() == HttpStatus.OK) {
-            SwapPassResponse swapPassResponse = swapPassResponseEntity.getBody();
+            final SwapPassResponse swapPassResponse = swapPassResponseEntity.getBody();
             switch (swapPassResponse.getStatus()) {
                 case -1:
                 case 0:

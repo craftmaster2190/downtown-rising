@@ -16,7 +16,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
-    public void configure(HttpSecurity http) throws Exception {
+    public void configure(final HttpSecurity http) throws Exception {
         http.authorizeRequests().anyRequest().permitAll();
         http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
     }

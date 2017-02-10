@@ -4,7 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,10 +25,10 @@ public abstract class CommonEntity implements Serializable {
     private Date updatedOn = new Date();
     private String updatedBy = "System";
 
-    public CommonEntity() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    protected CommonEntity() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
-            Object loggedInAccount = authentication.getPrincipal();
+            final Object loggedInAccount = authentication.getPrincipal();
             if (loggedInAccount != null) {
                 createdBy = loggedInAccount.toString();
                 updatedBy = loggedInAccount.toString();
@@ -36,7 +42,7 @@ public abstract class CommonEntity implements Serializable {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -47,7 +53,7 @@ public abstract class CommonEntity implements Serializable {
         return createdOn;
     }
 
-    public void setCreatedOn(Date createdOn) {
+    public void setCreatedOn(final Date createdOn) {
         this.createdOn = createdOn;
     }
 
@@ -57,7 +63,7 @@ public abstract class CommonEntity implements Serializable {
         return updatedOn;
     }
 
-    public void setUpdatedOn(Date updatedOn) {
+    public void setUpdatedOn(final Date updatedOn) {
         this.updatedOn = updatedOn;
     }
 
@@ -67,7 +73,7 @@ public abstract class CommonEntity implements Serializable {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(final String createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -76,7 +82,7 @@ public abstract class CommonEntity implements Serializable {
         return updatedBy;
     }
 
-    public void setUpdatedBy(String updatedBy) {
+    public void setUpdatedBy(final String updatedBy) {
         this.updatedBy = updatedBy;
     }
 }
