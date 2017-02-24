@@ -4,14 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>music.festival</groupId>
   <artifactId>downtown</artifactId>
-    <version>0.1.6</version>
+  <version>0.1.7</version>
   <packaging>${packaging.type}</packaging>
   <name>downtown</name>
   <description>Downtown Rising</description>
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>1.4.1.RELEASE</version>
+    <version>1.5.1.RELEASE</version>
     <relativePath/>
   </parent>
   <properties>
@@ -82,6 +82,14 @@
       <groupId>org.hashids</groupId>
       <artifactId>hashids</artifactId>
       <version>1.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-csv</artifactId>
     </dependency>
   </dependencies>
   <build>

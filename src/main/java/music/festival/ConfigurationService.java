@@ -26,10 +26,25 @@ public class ConfigurationService {
     private int defaultTimeout;
     @Value("${music.festival.cityweekly.hostname:#{null}}")
     private String cityWeeklyHostname;
+    @Value("${music.festival.registration.username:#{null}}")
+    private String viewRegistrationUsername;
+    @Value("${music.festival.registration.password:#{null}}")
+    private String viewRegistrationPassword;
+
+    public String viewRegistrationUsername() {
+        return viewRegistrationUsername;
+    }
+
+    public String viewRegistrationPassword() {
+        return viewRegistrationPassword;
+    }
 
     public boolean isBasicAuthSet() {
-        return cityWeeklyBasicAuthPassword() != null &&
-                cityWeeklyBasicAuthUsername() != null;
+        return cityWeeklyBasicAuthUsername() != null && cityWeeklyBasicAuthPassword() != null;
+    }
+
+    public boolean isViewRegistrationAuthSet() {
+        return viewRegistrationUsername() != null && viewRegistrationPassword() != null;
     }
 
     public String cityWeeklyBasicAuthUsername() {
@@ -49,4 +64,6 @@ public class ConfigurationService {
             throw new NullPointerException("Expected music.festival.cityweekly.hostname in properties");
         return cityWeeklyHostname;
     }
+
+
 }
