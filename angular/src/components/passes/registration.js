@@ -9,6 +9,7 @@ angular
             vm.register = register;
             vm.checkPass = checkPass;
             vm.isYoung = isYoung;
+            vm.getGenres = getGenres;
             vm.addGenre = addGenre;
             vm.deleteGenre = deleteGenre;
             vm.reset = reset;
@@ -105,11 +106,22 @@ angular
                 return false;
             }
 
+            function getGenres() {
+                if (angular.isArray(vm.genrePreferences)) {
+                    return vm.genres.filter(function (genre) {
+                        return vm.genrePreferences.indexOf(genre) === -1;
+                    });
+                }
+                return vm.genres;
+            }
+
             function addGenre(genre) {
                 if (!angular.isArray(vm.genrePreferences)) {
                     vm.genrePreferences = [];
                 }
-                vm.genrePreferences.push(genre);
+                if (vm.genrePreferences.indexOf(genre) === -1) {
+                    vm.genrePreferences.push(genre);
+                }
                 if (!angular.isObject(vm.account)) {
                     vm.account = {};
                 }

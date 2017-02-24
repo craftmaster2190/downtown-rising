@@ -17,7 +17,7 @@ angular
                 "Blues",
                 "R&B",
                 "Funk",
-                "HipHop / Rap",
+                "HipHop/Rap",
                 "Reggae",
                 "Jazz",
                 "Bluegrass",

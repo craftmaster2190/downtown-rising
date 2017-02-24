@@ -65,7 +65,7 @@ public class PassController {
         swapPassRequest.setGender(account.getGender());
         swapPassRequest.setReferredBy(account.getHeardAbout());
         swapPassRequest.setMusicPreferences(account.getGenrePreferences());
-        logger.info("buildSwapPassRequest: " + swapPassRequest);
+        logger.debug("buildSwapPassRequest: " + swapPassRequest);
         return swapPassRequest;
     }
 
