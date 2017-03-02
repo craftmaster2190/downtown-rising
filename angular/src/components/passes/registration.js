@@ -2,7 +2,7 @@ angular
     .module("rising")
     .component("registration", {
         templateUrl: "components/passes/registration.html",
-        controller: function ($scope, RegistrationService, GenreService, $window, $state, $uibModal) {
+        controller: function ($scope, RegistrationService, GenreService, PickupService, $window, $state, $uibModal) {
             var vm = this;
             console.log("Initializing Registration Controller...");
 
@@ -13,19 +13,23 @@ angular
             vm.addGenre = addGenre;
             vm.deleteGenre = deleteGenre;
             vm.reset = reset;
+            vm.getSubmitTooltipText = getSubmitTooltipText;
 
             (function init() {
                 vm.genres = GenreService.get();
-
-                vm.dateOptions = {
-                    maxDate: new Date()
-                };
+                vm.pickups = PickupService.get();
 
                 vm.date21YearsAgo = new Date(
                     new Date().setFullYear(
                         new Date().getFullYear() - 21
                     )
                 );
+
+                vm.dateOptions = {
+                    maxDate: new Date(),
+                    datepickerMode: "year",
+                    initDate: vm.date21YearsAgo
+                };
 
                 $scope.$watch(function watchCityWeeklyTicketId() {
                     if (vm.account) {
@@ -136,6 +140,33 @@ angular
             function reset() {
                 $window.scrollTo(0, 0);
                 $state.reload();
+            }
+
+            function getSubmitTooltipText() {
+                if (vm.accountInfoForm.$valid) {
+                    return;
+                }
+
+                var fields = [];
+                angular.forEach(vm.accountInfoForm, function (value, key) {
+                    if (key.indexOf("$") !== 0) {
+                        if (value.$name && value.$invalid) {
+                            fields.push(camelCaseToTitleCase(value.$name));
+                        }
+                    }
+                });
+                return fields.join(", ");
+            }
+
+            function camelCaseToTitleCase(string) {
+                return (string || "")
+                    .replace(/[A-Z]/g, function (txt) {
+                        return " " + txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                    })
+                    .replace(/\w\S*/g, function (txt) {
+                        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                    })
+                    .trim();
             }
         }
     });

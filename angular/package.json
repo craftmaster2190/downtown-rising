@@ -1,6 +1,6 @@
 {
   "name": "downtown",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "downtown rising",
   "main": "src/index.html",
   "scripts": {
